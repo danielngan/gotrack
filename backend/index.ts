@@ -1,15 +1,16 @@
 import mongoose from "mongoose";
-import {MongoDBRepositories} from "./mongodb/MongoDBRepositories";
-import * as process from "node:process";
+import {MongoDBRepositories} from "./repositories/mongodb/MongoDBRepositories";
 import {Repositories} from "./repositories/Repositories";
 
 const mongoDBUrl = "mongodb://192.168.2.155:27017";
 
 async function main(): Promise<void> {
+    mongoose.set('debug', true);
     await mongoose.connect(mongoDBUrl, {
         user: "root",
         pass: "goodExample",
-        dbName: "bus_system"
+        dbName: "bus_system",
+        autoIndex: true,
     })
     console.log(`Successfully connected to MongoDB at ${mongoDBUrl}`)
     const repository: Repositories = new MongoDBRepositories();
