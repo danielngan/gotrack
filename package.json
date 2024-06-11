@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node -r @swc-node/register backend/index.ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "keywords": [],
   "author": "",
@@ -13,7 +13,11 @@
   "devDependencies": {
     "@swc-node/register": "^1.9.1",
     "@swc/core": "^1.2.0",
+    "@types/jest": "^29.5.12",
     "@types/mongoose": "^5.11.97",
+    "jest": "^29.7.0",
+    "mongodb-memory-server": "^9.3.0",
+    "ts-jest": "^29.1.4",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.5"
   },

@@ -41,3 +41,17 @@ export enum TransferType {
     MinTransferTime = 2,
     NoTransfer = 3,
 }
+
+export class DuplicateEntryError extends Error {
+    constructor(message: string) {
+        super(message);
+        this.name = 'DuplicateEntryError';
+    }
+}
+
+export class EntryNotFoundError extends Error {
+    constructor(message: string) {
+        super(message);
+        this.name = 'EntryNotFoundError';
+    }
+}

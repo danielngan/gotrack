@@ -8,4 +8,10 @@ export interface TripRepository {
     getTripsByRouteId(routeId: string): Promise<Trip[]>;
 
     getTripsByServiceId(serviceId: string): Promise<Trip[]>;
+
+    addTrip(trip: Trip): Promise<void>;
+
+    updateTrip(trip: Trip): Promise<void>;
+
+    deleteTrip(tripId: string): Promise<void>;
 }

@@ -9,4 +9,10 @@ export interface StopTimeRepository {
     getStopTimesByStopId(stopId: string): Promise<StopTime[]>;
 
     getStopTimesByTripId(tripId: string): Promise<StopTime[]>;
+
+    addStopTime(stopTime: StopTime): Promise<void>;
+
+    updateStopTime(stopTime: StopTime): Promise<void>;
+
+    deleteStopTime(stopId: string, tripId: string): Promise<void>;
 }
