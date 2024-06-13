@@ -6,7 +6,8 @@ import {Repositories} from "../Repositories";
 import {applyMixins} from "../../../core/utils/Utils";
 
 export interface MongoDBRepositories
-    extends MongoDBRouteRepository,
+    extends
+        MongoDBRouteRepository,
         MongoDBStopRepository,
         MongoDBStopTimeRepository,
         MongoDBTripRepository,
@@ -14,6 +15,15 @@ export interface MongoDBRepositories
 }
 
 export class MongoDBRepositories {
+
+    async clearAll(): Promise<void> {
+        await Promise.all([
+            this.clearAllRoutes(),
+            this.clearAllStops(),
+            this.clearAllStopTimes(),
+            this.clearAllTrips()
+        ]);
+    }
 }
 
 applyMixins(MongoDBRepositories, [

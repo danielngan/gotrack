@@ -65,32 +65,28 @@ export class MongoDBRouteRepository implements RouteRepository {
         try {
             await RouteModel.create(route)
         } catch (error) {
-            if (error instanceof MongoError && error.code === 11000 /* DuplicateKey */) {
-                throw new DuplicateEntryError(`Trying to add a Route with a duplicate route_id: ${route.route_id}`);
+            if (error instanceof MongoError && error.code === 11000 /* DuplicateEntry */) {
+                throw new DuplicateEntryError(`Route with route_id: ${route.route_id} already exists)`);
             }
             throw error;
         }
     }
 
     async updateRoute(route: Partial<Route> & Pick<Route, "route_id">): Promise<void> {
-        try {
-            await RouteModel.updateOne({route_id: route.route_id}, {$set: route}).exec();
-        } catch (error) {
-            if (error instanceof MongoError && error.code === 211 /* KeyNotFound */) {
-                throw new EntryNotFoundError(`Trying to update a non-existing Route with route_id: ${route.route_id}`)
-            }
-            throw error;
+        const result = await RouteModel.updateOne({route_id: route.route_id}, {$set: route}).exec();
+        if (result.matchedCount === 0 || result.modifiedCount === 0) {
+            throw new EntryNotFoundError(`Route with route_id: ${route.route_id} not found`)
         }
     }
 
     async deleteRoute(routeId: string): Promise<void> {
-        try {
-            await RouteModel.deleteOne({route_id: routeId})
-        } catch (error) {
-            if (error instanceof MongoError && error.code === 211 /* KeyNotFound */) {
-                throw new EntryNotFoundError(`Trying to delete a non-existing Route with route_id: ${routeId}`)
-            }
-            throw error;
+        const result = await RouteModel.deleteOne({route_id: routeId})
+        if (result.deletedCount === 0) {
+            throw new EntryNotFoundError(`Route with route_id: ${routeId} not found`)
         }
+    }
+
+    async clearAllRoutes(): Promise<void> {
+        await RouteModel.deleteMany({}).exec()
     }
 }
