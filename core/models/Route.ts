@@ -1,5 +1,12 @@
+/**
+ * A model representing a route as defined in the GTFS.
+ */
 export interface Route {
+    /**
+     * The ID of the route, which is the primary key.
+     */
     route_id: string;
+
     agency_id: string;
     route_short_name: string;
     route_long_name: string;
