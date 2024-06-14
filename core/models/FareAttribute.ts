@@ -1,8 +1,8 @@
 export interface FareAttribute {
-    fare_id: string;
-    price: number;
-    currency_type: string;
-    payment_method: number;
-    transfers: number;
-    transfer_duration?: number;
+    readonly fare_id: string;
+    readonly price: number;
+    readonly currency_type: string;
+    readonly payment_method: number;
+    readonly transfers: number;
+    readonly transfer_duration?: number;
 }

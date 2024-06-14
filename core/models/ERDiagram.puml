@@ -1,0 +1,71 @@
+@startuml
+'*https://plantuml.com/class-diagram
+
+title GTFS
+
+interface Route {
+    *route_id: string
+    --
+    *agency_id: string
+    *route_short_name: string
+    *route_long_name: string
+    *route_type: number
+    route_desc: string
+    route_url: string
+    route_color: string
+    route_text_color: string
+    route_sort_order: number
+    continuous_pickup: 0 | 1 | 2
+    continuous_drop_off: 0 | 1 | 2
+}
+
+interface Stop {
+    *stop_id: string
+    --
+    *stop_name: string
+    *stop_lat: number
+    *stop_lon: number
+    stop_code: string
+    stop_desc: string
+    zone_id: string
+    stop_url: string
+    location_type: LocationType
+    parent_station: string
+    stop_timezone: string
+    wheelchair_boarding: 0 | 1 | 2
+}
+
+interface StopTime {
+    *stop_id: string
+    *trip_id: string
+    --
+    *arrival_time: string
+    *departure_time: string
+    *stop_sequence: number
+    stop_headsign: string
+    pickup_type: PickupDropOffType
+    drop_off_type: PickupDropOffType
+    shape_dist_traveled: number
+    timepoint: 0 | 1
+}
+
+interface Trip {
+    *trip_id: string
+    --
+    *route_id: string
+    *service_id: string
+    trip_headsign: string
+    trip_short_name: string
+    direction_id: DirectionId
+    block_id: string
+    shape_id: string
+    wheelchair_accessible: WheelchairAccessible
+    bikes_allowed: BikesAllowed
+}
+
+Route --{ Trip
+Trip --{ StopTime
+Stop --{ StopTime
+
+
+@enduml

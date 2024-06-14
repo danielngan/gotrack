@@ -1,10 +1,10 @@
 export interface Agency {
-    agency_id: string;
-    agency_name: string;
-    agency_url: string;
-    agency_timezone: string;
-    agency_lang?: string;
-    agency_phone?: string;
-    agency_fare_url?: string;
-    agency_email?: string;
+    readonly agency_id: string;
+    readonly agency_name: string;
+    readonly agency_url: string;
+    readonly agency_timezone: string;
+    readonly agency_lang?: string;
+    readonly agency_phone?: string;
+    readonly agency_fare_url?: string;
+    readonly agency_email?: string;
 }
