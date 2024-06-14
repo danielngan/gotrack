@@ -1,6 +1,9 @@
 import {StopTimeRepository} from "../StopTimeRepository";
 import mongoose, {Schema} from "mongoose";
 import {StopTime} from "../../../core/models/StopTime";
+import {RouteModel} from "./MongoDBRouteRepository";
+import {MongoError} from "mongodb";
+import {DuplicateEntryError, EntryNotFoundError} from "../../../core/types/Types";
 
 
 export const StopTimeSchema = new Schema<StopTime>({
@@ -38,32 +41,48 @@ StopTimeSchema.index({stop_id: 1, trip_id: 1}, {unique: true});
 export const StopTimeModel = mongoose.model<StopTime>('StopTime', StopTimeSchema);
 
 export class MongoDBStopTimeRepository implements StopTimeRepository {
-
-    getAllStopTimes(): Promise<StopTime[]> {
-        throw new Error("Method not implemented.");
+    async clearAllStopTimes(): Promise<void> {
+        await StopTimeModel.deleteMany({}).exec();
     }
 
-    getStopTimeById(stopId: string, tripId: string): Promise<StopTime | undefined> {
-        throw new Error("Method not implemented.");
+    async getAllStopTimes(): Promise<StopTime[]> {
+        return (await StopTimeModel.find().exec()).map(document => document.toObject())
     }
 
-    getStopTimesByStopId(stopId: string): Promise<StopTime[]> {
-        throw new Error("Method not implemented.");
+    async getStopTimeById(stopId: string, tripId: string): Promise<StopTime | undefined> {
+        return (await StopTimeModel.findOne({stop_id: stopId, trip_id: tripId}).exec())?.toObject() ?? undefined
     }
 
-    getStopTimesByTripId(tripId: string): Promise<StopTime[]> {
-        throw new Error("Method not implemented.");
+    async getStopTimesByStopId(stopId: string): Promise<StopTime[]> {
+        return (await StopTimeModel.find({stop_id: stopId}).exec()).map(document => document.toObject())
     }
 
-    addStopTime(stopTime: StopTime): Promise<void> {
-        throw new Error("Method not implemented.");
+    async getStopTimesByTripId(tripId: string): Promise<StopTime[]> {
+        return (await StopTimeModel.find({trip_id: tripId}).exec()).map(document => document.toObject())
     }
 
-    updateStopTime(stopTime: StopTime): Promise<void> {
-        throw new Error("Method not implemented.");
+    async addStopTime(stopTime: StopTime): Promise<void> {
+        try {
+            await StopTimeModel.create(stopTime)
+        } catch (error) {
+            if (error instanceof MongoError && error.code === 11000 /* DuplicateKey */) {
+                throw new DuplicateEntryError(`Trying to add a Route with a duplicate stop_id: ${stopTime.stop_id}, trip_id: ${stopTime.trip_id}`);
+            }
+            throw error;
+        }
     }
 
-    deleteStopTime(stopId: string, tripId: string): Promise<void> {
-        throw new Error("Method not implemented.");
+    async updateStopTime(stopTime: Partial<StopTime> & Pick<StopTime, "stop_id" | "trip_id">): Promise<void> {
+        const result = await StopTimeModel.updateOne({stop_id: stopTime.stop_id, trip_id: stopTime.trip_id}, {$set: stopTime}).exec();
+        if (result.matchedCount === 0 || result.modifiedCount === 0) {
+            throw new EntryNotFoundError(`Stop time with stop_id: ${stopTime.stop_id} & trip_id: ${stopTime.trip_id} not found`)
+        }
+    }
+
+    async deleteStopTime(stopId: string, tripId: string): Promise<void> {
+        const result = await StopTimeModel.deleteOne({stop_id: stopId, trip_id: tripId})
+        if (result.deletedCount === 0) {
+            throw new EntryNotFoundError(`Stop time with stop_id: ${stopId} & trip_id: ${tripId} not found`)
+        }
     }
 }
