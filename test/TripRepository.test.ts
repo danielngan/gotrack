@@ -1,18 +1,18 @@
-import { TripRepository } from '../backend/repositories/TripRepository';
-import {Trip} from "../core/models/Trip";
-import {DuplicateEntryError, EntryNotFoundError} from "../core/types/Types";
-import {getRepositories} from "./RepositoriesSetup";
+import {Trip} from "../core/domain/entities/Trip";
+import {EntryNotFoundError} from "../core/application/exceptions/EntryNotFoundError";
+import {getRepositoriesImplementations} from "./Repositories.setup";
+import {Repositories} from "../backend/application/repositories/Repositories";
+import {DuplicateEntryError} from "../core/application/exceptions/DuplicateEntryError";
 
-describe('TripRepository Interface', () => {
+const repositoriesImplementations: Repositories[] = getRepositoriesImplementations();
 
-    let repo: TripRepository;
+describe.each(repositoriesImplementations)('TripRepository Interface', (repo) => {
 
     beforeEach(async () => {
-        repo = getRepositories()
-        await repo.clearAllTrips();
+        await repo.clearAllTrips()
     });
 
-    test('should add and retrieve a trip', async () => {
+    it('should add and retrieve a trip', async () => {
         const trip: Trip = {
             trip_id: '1',
             route_id: 'route1',
@@ -27,7 +27,7 @@ describe('TripRepository Interface', () => {
         expect(retrievedTrip).toEqual(trip);
     });
 
-    test('should throw error when adding a duplicate trip', async () => {
+    it('should throw error when adding a duplicate trip', async () => {
         const trip: Trip = {
             trip_id: '1',
             route_id: 'route1',
@@ -41,7 +41,7 @@ describe('TripRepository Interface', () => {
         await expect(repo.addTrip(trip)).rejects.toThrow(DuplicateEntryError);
     });
 
-    test('should update a trip', async () => {
+    it('should update a trip', async () => {
         const trip: Trip = {
             trip_id: '1',
             route_id: 'route1',
@@ -57,11 +57,11 @@ describe('TripRepository Interface', () => {
         expect(updatedTrip?.trip_headsign).toBe('Uptown');
     });
 
-    test('should throw error when updating a non-existent trip', async () => {
+    it('should throw error when updating a non-existent trip', async () => {
         await expect(repo.updateTrip({ trip_id: '1', trip_headsign: 'Uptown' })).rejects.toThrow(EntryNotFoundError);
     });
 
-    test('should delete a trip', async () => {
+    it('should delete a trip', async () => {
         const trip: Trip = {
             trip_id: '1',
             route_id: 'route1',
@@ -77,11 +77,11 @@ describe('TripRepository Interface', () => {
         expect(deletedTrip).toBeUndefined();
     });
 
-    test('should throw error when deleting a non-existent trip', async () => {
+    it('should throw error when deleting a non-existent trip', async () => {
         await expect(repo.deleteTrip('1')).rejects.toThrow(EntryNotFoundError);
     });
 
-    test('should retrieve all trips', async () => {
+    it('should retrieve all trips', async () => {
         const trip1: Trip = {
             trip_id: '1',
             route_id: 'route1',
@@ -107,7 +107,7 @@ describe('TripRepository Interface', () => {
         expect(allTrips).toEqual(expect.arrayContaining([trip1, trip2]));
     });
 
-    test('should retrieve trips by route ID', async () => {
+    it('should retrieve trips by route ID', async () => {
         const trip1: Trip = {
             trip_id: '1',
             route_id: 'route1',
@@ -144,7 +144,7 @@ describe('TripRepository Interface', () => {
         expect(trips).toContainEqual(trip3);
     });
 
-    test('should retrieve trips by service ID', async () => {
+    it('should retrieve trips by service ID', async () => {
         const trip1: Trip = {
             trip_id: '1',
             route_id: 'route1',
@@ -181,7 +181,7 @@ describe('TripRepository Interface', () => {
         expect(trips).toContainEqual(trip2);
     });
 
-    test('should clear all trips', async () => {
+    it('should clear all trips', async () => {
         const trip: Trip = {
             trip_id: '1',
             route_id: 'route1',

@@ -1,10 +1,10 @@
 import mongoose from "mongoose";
-import {MongoDBRepositories} from "./repositories/mongodb/MongoDBRepositories";
-import {Repositories} from "./repositories/Repositories";
-import {ExpressServer} from "./infrastructure/ExpressServer";
-import {UseCaseInteractor} from "./interactors/UseCaseInteractor";
-import {QueryAllRoutesInteractor} from "./interactors/QueryAllRoutesInteractor";
-import {QueryAllStopsInteractor} from "./interactors/QueryAllStopsInteractor";
+import {MongoDBRepositories} from "./infrastructure/mongodb/MongoDBRepositories";
+import {Repositories} from "./application/repositories/Repositories";
+import {ExpressServer} from "./infrastructure/express/ExpressServer";
+import {UseCaseInteractor} from "./application/usecases/UseCaseInteractor";
+import {QueryAllRoutesInteractor} from "./application/usecases/QueryAllRoutesInteractor";
+import {QueryAllStopsInteractor} from "./application/usecases/QueryAllStopsInteractor";
 
 const mongoDBUrl = "mongodb://192.168.2.155:27017";
 

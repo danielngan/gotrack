@@ -1,18 +1,18 @@
-import { StopTimeRepository } from '../backend/repositories/StopTimeRepository';
-import {StopTime} from "../core/models/StopTime";
-import {DuplicateEntryError, EntryNotFoundError} from "../core/types/Types";
-import {getRepositories} from "./RepositoriesSetup";
+import {StopTime} from "../core/domain/entities/StopTime";
+import {EntryNotFoundError} from "../core/application/exceptions/EntryNotFoundError";
+import {getRepositoriesImplementations} from "./Repositories.setup";
+import {Repositories} from "../backend/application/repositories/Repositories";
+import {DuplicateEntryError} from "../core/application/exceptions/DuplicateEntryError";
 
-describe('StopTimeRepository Interface', () => {
+const repositoriesImplementations: Repositories[] = getRepositoriesImplementations();
 
-    let repo: StopTimeRepository;
+describe.each(repositoriesImplementations)('StopTimeRepository Interface', (repo) => {
 
     beforeEach(async () => {
-        repo = getRepositories();
-        await repo.clearAllStopTimes();
+        await repo.clearAllStopTimes()
     });
 
-    test('should add and retrieve a stop time', async () => {
+    it('should add and retrieve a stop time', async () => {
         const stopTime: StopTime = {
             stop_id: '1',
             trip_id: 'trip1',
@@ -25,7 +25,7 @@ describe('StopTimeRepository Interface', () => {
         expect(retrievedStopTime).toEqual(stopTime);
     });
 
-    test('should throw error when adding a duplicate stop time', async () => {
+    it('should throw error when adding a duplicate stop time', async () => {
         const stopTime: StopTime = {
             stop_id: '1',
             trip_id: 'trip1',
@@ -37,7 +37,7 @@ describe('StopTimeRepository Interface', () => {
         await expect(repo.addStopTime(stopTime)).rejects.toThrow(DuplicateEntryError);
     });
 
-    test('should update a stop time', async () => {
+    it('should update a stop time', async () => {
         const stopTime: StopTime = {
             stop_id: '1',
             trip_id: 'trip1',
@@ -51,11 +51,11 @@ describe('StopTimeRepository Interface', () => {
         expect(updatedStopTime?.arrival_time).toBe('08:10:00');
     });
 
-    test('should throw error when updating a non-existent stop time', async () => {
+    it('should throw error when updating a non-existent stop time', async () => {
         await expect(repo.updateStopTime({ stop_id: '1', trip_id: 'trip1', arrival_time: '08:10:00' })).rejects.toThrow(EntryNotFoundError);
     });
 
-    test('should delete a stop time', async () => {
+    it('should delete a stop time', async () => {
         const stopTime: StopTime = {
             stop_id: '1',
             trip_id: 'trip1',
@@ -69,11 +69,11 @@ describe('StopTimeRepository Interface', () => {
         expect(deletedStopTime).toBeUndefined();
     });
 
-    test('should throw error when deleting a non-existent stop time', async () => {
+    it('should throw error when deleting a non-existent stop time', async () => {
         await expect(repo.deleteStopTime('1', 'trip1')).rejects.toThrow(EntryNotFoundError);
     });
 
-    test('should retrieve stop times by trip ID', async () => {
+    it('should retrieve stop times by trip ID', async () => {
         const stopTime1: StopTime = {
             stop_id: '1',
             trip_id: 'trip1',
@@ -103,7 +103,7 @@ describe('StopTimeRepository Interface', () => {
         expect(stopTimesInTrip1).toEqual(expect.arrayContaining([stopTime1, stopTime2]));
     });
 
-    test('should clear all stop times', async () => {
+    it('should clear all stop times', async () => {
         const stopTime: StopTime = {
             stop_id: '1',
             trip_id: 'trip1',
@@ -117,7 +117,7 @@ describe('StopTimeRepository Interface', () => {
         expect(allStopTimes).toHaveLength(0);
     });
 
-    test('should search stop times by stop ID', async () => {
+    it('should search stop times by stop ID', async () => {
         const stopTime1: StopTime = {
             stop_id: '1',
             trip_id: 'trip1',

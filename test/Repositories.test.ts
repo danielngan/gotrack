@@ -1,16 +1,15 @@
-import {Repositories} from "../backend/repositories/Repositories";
-import {getRepositories} from "./RepositoriesSetup";
+import {Repositories} from "../backend/application/repositories/Repositories";
+import {getRepositoriesImplementations} from "./Repositories.setup";
 
-describe('Repositories', () => {
+const repositoriesImplementations: Repositories[] = getRepositoriesImplementations();
 
-    let repo: Repositories;
+describe.each(repositoriesImplementations)('Repositories', (repo) => {
 
     beforeEach(async () => {
-        repo = getRepositories();
         await repo.clearAll();
     });
 
-    test('should clear all data', async () => {
+    it('should clear all data', async () => {
         await repo.addRoute({
             route_id: '1',
             agency_id: 'A1',
