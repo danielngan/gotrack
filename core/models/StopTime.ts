@@ -8,26 +8,26 @@ export interface StopTime {
     /**
      * The stop ID which is part of the primary key of the stop time.
      */
-    stop_id: string;
+    readonly stop_id: string;
 
     /**
      * The trip ID which is part of the primary key of the stop time.
      */
-    trip_id: string;
+    readonly trip_id: string;
 
-    arrival_time: string;
+    readonly arrival_time: string;
 
-    departure_time: string;
+    readonly departure_time: string;
 
-    stop_sequence: number;
+    readonly stop_sequence: number;
 
-    stop_headsign?: string;
+    readonly stop_headsign?: string;
 
-    pickup_type?: PickupDropOffType;
+    readonly pickup_type?: PickupDropOffType;
 
-    drop_off_type?: PickupDropOffType;
+    readonly drop_off_type?: PickupDropOffType;
 
-    shape_dist_traveled?: number;
+    readonly shape_dist_traveled?: number;
 
-    timepoint?: 0 | 1;
+    readonly timepoint?: 0 | 1;
 }

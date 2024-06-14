@@ -1,6 +1,6 @@
 export interface FareRule {
-    fare_id: string;
-    route_id?: string;
-    origin_id?: string;
-    destination_id?: string;
+    readonly fare_id: string;
+    readonly route_id?: string;
+    readonly origin_id?: string;
+    readonly destination_id?: string;
 }

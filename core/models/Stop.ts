@@ -7,18 +7,18 @@ export interface Stop {
     /**
      * The ID of the stop, which is the primary key.
      */
-    stop_id: string;
+    readonly stop_id: string;
 
-    stop_code?: string;
-    stop_name: string;
-    stop_desc?: string;
-    stop_lat: number;
-    stop_lon: number;
-    zone_id?: string;
-    stop_url?: string;
-    location_type?: LocationType;
-    parent_station?: string;
-    stop_timezone?: string;
-    wheelchair_boarding?: 0 | 1 | 2;
+    readonly stop_code?: string;
+    readonly stop_name: string;
+    readonly stop_desc?: string;
+    readonly stop_lat: number;
+    readonly stop_lon: number;
+    readonly zone_id?: string;
+    readonly stop_url?: string;
+    readonly location_type?: LocationType;
+    readonly parent_station?: string;
+    readonly stop_timezone?: string;
+    readonly wheelchair_boarding?: 0 | 1 | 2;
 }
 

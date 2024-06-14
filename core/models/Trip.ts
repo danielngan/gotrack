@@ -8,23 +8,23 @@ export interface Trip {
     /**
      * The ID of the trip, which is the primary key.
      */
-    trip_id: string;
+    readonly trip_id: string;
 
-    route_id: string;
+    readonly route_id: string;
 
-    service_id: string;
+    readonly service_id: string;
 
-    trip_headsign?: string;
+    readonly trip_headsign?: string;
 
-    trip_short_name?: string;
+    readonly trip_short_name?: string;
 
-    direction_id?: DirectionId;
+    readonly direction_id?: DirectionId;
 
-    block_id?: string;
+    readonly block_id?: string;
 
-    shape_id?: string;
+    readonly shape_id?: string;
 
-    wheelchair_accessible?: WheelchairAccessible;
+    readonly wheelchair_accessible?: WheelchairAccessible;
 
-    bikes_allowed?: BikesAllowed;
+    readonly bikes_allowed?: BikesAllowed;
 }

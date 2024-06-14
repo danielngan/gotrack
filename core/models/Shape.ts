@@ -1,7 +1,7 @@
 export interface Shape {
-    shape_id: string;
-    shape_pt_lat: number;
-    shape_pt_lon: number;
-    shape_pt_sequence: number;
-    shape_dist_traveled?: number;
+    readonly shape_id: string;
+    readonly shape_pt_lat: number;
+    readonly shape_pt_lon: number;
+    readonly shape_pt_sequence: number;
+    readonly shape_dist_traveled?: number;
 }

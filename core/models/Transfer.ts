@@ -1,9 +1,9 @@
 import {TransferType} from "../types/Types";
 
 export interface Transfer {
-    from_stop_id: string;
-    to_stop_id: string;
-    transfer_type: TransferType;
-    min_transfer_time?: number;
+    readonly from_stop_id: string;
+    readonly to_stop_id: string;
+    readonly transfer_type: TransferType;
+    readonly min_transfer_time?: number;
 
 }
