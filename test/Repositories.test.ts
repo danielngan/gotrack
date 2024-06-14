@@ -1,4 +1,4 @@
-import {Repositories} from "../backend/repositories/Repositories";
+import {Repositories} from "../backend/application/repositories/Repositories";
 import {getRepositoriesImplementations} from "./Repositories.setup";
 
 const repositoriesImplementations: Repositories[] = getRepositoriesImplementations();

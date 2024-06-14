@@ -1,9 +1,10 @@
-import {Repositories} from "../../backend/repositories/Repositories";
-import {Route} from "../../core/models/Route";
-import {Trip} from "../../core/models/Trip";
-import {StopTime} from "../../core/models/StopTime";
-import {Stop} from "../../core/models/Stop";
-import {DuplicateEntryError, EntryNotFoundError} from "../../core/types/Types";
+import {Repositories} from "../../backend/application/repositories/Repositories";
+import {Route} from "../../core/domain/entities/Route";
+import {Trip} from "../../core/domain/entities/Trip";
+import {StopTime} from "../../core/domain/entities/StopTime";
+import {Stop} from "../../core/domain/entities/Stop";
+import {EntryNotFoundError} from "../../core/application/exceptions/EntryNotFoundError";
+import {DuplicateEntryError} from "../../core/application/exceptions/DuplicateEntryError";
 
 export class MockRepositories implements Repositories {
 

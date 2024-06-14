@@ -1,7 +1,8 @@
-import {Stop} from "../core/models/Stop";
-import {DuplicateEntryError, EntryNotFoundError} from "../core/types/Types";
+import {Stop} from "../core/domain/entities/Stop";
+import {EntryNotFoundError} from "../core/application/exceptions/EntryNotFoundError";
 import {getRepositoriesImplementations} from "./Repositories.setup";
-import {Repositories} from "../backend/repositories/Repositories";
+import {Repositories} from "../backend/application/repositories/Repositories";
+import {DuplicateEntryError} from "../core/application/exceptions/DuplicateEntryError";
 
 const repositoriesImplementations: Repositories[] = getRepositoriesImplementations();
 

@@ -1,0 +1,6 @@
+export enum PickupDropOffType {
+    REGULARLY_SCHEDULED = 0,
+    NONE_AVAILABLE = 1,
+    MUST_PHONE_AGENCY = 2,
+    MUST_COORDINATE_WITH_DRIVER = 3
+}
