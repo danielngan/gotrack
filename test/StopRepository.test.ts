@@ -1,22 +1,17 @@
-import { StopRepository } from '../backend/repositories/StopRepository';
 import {Stop} from "../core/models/Stop";
 import {DuplicateEntryError, EntryNotFoundError} from "../core/types/Types";
-import {getRepositories} from "./RepositoriesSetup";
+import {getRepositoriesImplementations} from "./Repositories.setup";
+import {Repositories} from "../backend/repositories/Repositories";
 
-describe('StopRepository Interface', () => {
+const repositoriesImplementations: Repositories[] = getRepositoriesImplementations();
 
-    let repo: StopRepository;
+describe.each(repositoriesImplementations)('StopRepository Interface', (repo) => {
 
     beforeEach(async () => {
-        repo = getRepositories();
         await repo.clearAllStops()
     });
 
-    afterEach(async () => {
-        await repo.clearAllStops();
-    });
-
-    test('should add and retrieve a stop', async () => {
+    it('should add and retrieve a stop', async () => {
         const stop: Stop = {
             stop_id: '1',
             stop_name: 'First Stop',
@@ -28,7 +23,7 @@ describe('StopRepository Interface', () => {
         expect(retrievedStop).toEqual(stop);
     });
 
-    test('should throw error when adding a duplicate stop', async () => {
+    it('should throw error when adding a duplicate stop', async () => {
         const stop: Stop = {
             stop_id: '1',
             stop_name: 'First Stop',
@@ -39,7 +34,7 @@ describe('StopRepository Interface', () => {
         await expect(repo.addStop(stop)).rejects.toThrow(DuplicateEntryError);
     });
 
-    test('should update a stop', async () => {
+    it('should update a stop', async () => {
         const stop: Stop = {
             stop_id: '1',
             stop_name: 'First Stop',
@@ -52,11 +47,11 @@ describe('StopRepository Interface', () => {
         expect(updatedStop?.stop_name).toBe('Updated Stop');
     });
 
-    test('should throw error when updating a non-existent stop', async () => {
+    it('should throw error when updating a non-existent stop', async () => {
         await expect(repo.updateStop({ stop_id: '1', stop_name: 'Updated Stop' })).rejects.toThrow(EntryNotFoundError);
     });
 
-    test('should delete a stop', async () => {
+    it('should delete a stop', async () => {
         const stop: Stop = {
             stop_id: '1',
             stop_name: 'First Stop',
@@ -69,11 +64,11 @@ describe('StopRepository Interface', () => {
         expect(deletedStop).toBeUndefined();
     });
 
-    test('should throw error when deleting a non-existent stop', async () => {
+    it('should throw error when deleting a non-existent stop', async () => {
         await expect(repo.deleteStop('1')).rejects.toThrow(EntryNotFoundError);
     });
 
-    test('should retrieve stops by zone ID', async () => {
+    it('should retrieve stops by zone ID', async () => {
         const stop1: Stop = {
             stop_id: '1',
             stop_name: 'First Stop',
@@ -103,7 +98,7 @@ describe('StopRepository Interface', () => {
         expect(stopsInZoneA1).toEqual(expect.arrayContaining([stop1, stop2]));
     });
 
-    test('should clear all stops', async () => {
+    it('should clear all stops', async () => {
         const stop: Stop = {
             stop_id: '1',
             stop_name: 'First Stop',
@@ -116,7 +111,7 @@ describe('StopRepository Interface', () => {
         expect(allStops).toHaveLength(0);
     });
 
-    test('should search stops by name pattern', async () => {
+    it('should search stops by name pattern', async () => {
         const stop1: Stop = {
             stop_id: '1',
             stop_name: 'Main St',

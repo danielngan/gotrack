@@ -1,16 +1,13 @@
 import {MongoMemoryServer} from "mongodb-memory-server";
 import mongoose from "mongoose";
-import {MongoDBRepositories} from "./backend/repositories/mongodb/MongoDBRepositories";
-import {setRepositories} from "./test/RepositoriesSetup";
 
 const mongoDBServer = new MongoMemoryServer();
 
 beforeAll(async () => {
-    setRepositories(new MongoDBRepositories());
     await mongoDBServer.start();
     console.log("Started MongoDB server");
     await mongoose.connect(mongoDBServer.getUri(), {
-        dbName: "bus_system",
+        dbName: "go",
         autoIndex: true,
     });
     console.log(`Connected to MongoDB server: ${mongoDBServer.getUri()}`);

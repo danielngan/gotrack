@@ -1,10 +1,9 @@
-import express, { Express, Request, Response } from 'express';
+import express, {Express, Request, Response} from 'express';
 import {UseCaseInteractor} from "../interactors/UseCaseInteractor";
 import bodyParser from "body-parser";
 import cors from 'cors';
 import morgan from 'morgan';
 import * as http from "node:http";
-import {UseCaseType} from "../../core/usecases/UseCase";
 
 
 export class ExpressServer {

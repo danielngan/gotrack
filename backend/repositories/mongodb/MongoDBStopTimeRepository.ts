@@ -1,27 +1,16 @@
 import {StopTimeRepository} from "../StopTimeRepository";
 import mongoose, {Schema} from "mongoose";
 import {StopTime} from "../../../core/models/StopTime";
-import {RouteModel} from "./MongoDBRouteRepository";
 import {MongoError} from "mongodb";
 import {DuplicateEntryError, EntryNotFoundError} from "../../../core/types/Types";
 
 
 export const StopTimeSchema = new Schema<StopTime>({
-    stop_id: {
-        type: String, required: true
-    },
-    trip_id: {
-        type: String, required: true
-    },
-    arrival_time: {
-        type: String, required: true
-    },
-    departure_time: {
-        type: String, required: true
-    },
-    stop_sequence: {
-        type: Number, required: true
-    },
+    stop_id: {type: String, required: true},
+    trip_id: {type: String, required: true},
+    arrival_time: {type: String, required: true},
+    departure_time: {type: String, required: true},
+    stop_sequence: {type: Number, required: true},
     stop_headsign: String,
     pickup_type: Number,
     drop_off_type: Number,
@@ -63,7 +52,7 @@ export class MongoDBStopTimeRepository implements StopTimeRepository {
 
     async addStopTime(stopTime: StopTime): Promise<void> {
         try {
-            await StopTimeModel.create(stopTime)
+            await (await StopTimeModel.create(stopTime)).save()
         } catch (error) {
             if (error instanceof MongoError && error.code === 11000 /* DuplicateKey */) {
                 throw new DuplicateEntryError(`Trying to add a Route with a duplicate stop_id: ${stopTime.stop_id}, trip_id: ${stopTime.trip_id}`);
@@ -80,7 +69,7 @@ export class MongoDBStopTimeRepository implements StopTimeRepository {
     }
 
     async deleteStopTime(stopId: string, tripId: string): Promise<void> {
-        const result = await StopTimeModel.deleteOne({stop_id: stopId, trip_id: tripId})
+        const result = await StopTimeModel.deleteOne({stop_id: stopId, trip_id: tripId}).exec()
         if (result.deletedCount === 0) {
             throw new EntryNotFoundError(`Stop time with stop_id: ${stopId} & trip_id: ${tripId} not found`)
         }

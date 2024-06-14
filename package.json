@@ -28,6 +28,7 @@
     "cors": "^2.8.5",
     "express": "^4.19.2",
     "mongoose": "^8.4.1",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "sleep-promise": "^9.1.0"
   }
 }

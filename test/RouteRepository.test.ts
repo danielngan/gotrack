@@ -1,9 +1,11 @@
 import {Route} from "../core/models/Route";
 import {DuplicateEntryError, EntryNotFoundError} from "../core/types/Types";
 import {Repositories} from "../backend/repositories/Repositories";
-import {getRepositories} from "./RepositoriesSetup";
+import {getRepositoriesImplementations} from "./Repositories.setup";
 
-describe('RouteRepository', () => {
+const repositoriesImplementations: Repositories[] = getRepositoriesImplementations();
+
+describe.each(repositoriesImplementations)('RouteRepository', (repo) => {
 
     const sampleRoute: Route = {
         route_id: '1',
@@ -21,14 +23,7 @@ describe('RouteRepository', () => {
         route_type: 3,
     };
 
-    let repo: Repositories;
-
     beforeEach(async () => {
-        repo = getRepositories();
-        await repo.clearAllRoutes();
-    });
-
-    afterEach(async () => {
         await repo.clearAllRoutes();
     });
 

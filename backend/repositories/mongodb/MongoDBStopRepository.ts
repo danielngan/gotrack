@@ -5,18 +5,10 @@ import {MongoError} from "mongodb";
 import {DuplicateEntryError, EntryNotFoundError} from "../../../core/types/Types";
 
 export const StopSchema = new Schema<Stop>({
-    stop_id: {
-        type: String, required: true, index: true, unique: true
-    },
-    stop_name: {
-        type: String, required: true, index: true
-    },
-    stop_lat: {
-        type: Number, required: true
-    },
-    stop_lon: {
-        type: Number, required: true
-    },
+    stop_id: {type: String, required: true, index: true, unique: true},
+    stop_name: {type: String, required: true, index: true},
+    stop_lat: {type: Number, required: true},
+    stop_lon: {type: Number, required: true},
     stop_code: String,
     stop_desc: String,
     zone_id: String,
@@ -38,7 +30,7 @@ export const StopModel = mongoose.model<Stop>('Stop', StopSchema);
 
 export class MongoDBStopRepository implements StopRepository {
     async clearAllStops(): Promise<void> {
-        await StopModel.deleteMany({}).exec();
+        await StopModel.deleteMany().exec();
     }
 
     async getAllStops(): Promise<Stop[]> {
@@ -63,7 +55,7 @@ export class MongoDBStopRepository implements StopRepository {
 
     async addStop(stop: Stop): Promise<void> {
         try {
-            await StopModel.create(stop)
+            await (await StopModel.create(stop)).save()
         } catch (error) {
             if (error instanceof MongoError && error.code === 11000 /* DuplicateKey */) {
                 throw new DuplicateEntryError(`Trying to add a Stop with a duplicate stop_id: ${stop.stop_id}`);
@@ -80,7 +72,7 @@ export class MongoDBStopRepository implements StopRepository {
     }
 
     async deleteStop(stopId: string): Promise<void> {
-        const result = await StopModel.deleteOne({stop_id: stopId})
+        const result = await StopModel.deleteOne({stop_id: stopId}).exec()
         if (result.deletedCount === 0) {
             throw new EntryNotFoundError(`Stop with stop_id: ${stopId} not found`)
         }

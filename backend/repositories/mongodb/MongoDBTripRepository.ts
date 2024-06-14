@@ -1,20 +1,13 @@
 import {TripRepository} from "../TripRepository";
 import {Trip} from "../../../core/models/Trip";
 import mongoose, {Schema} from "mongoose";
-import {RouteModel} from "./MongoDBRouteRepository";
 import {MongoError} from "mongodb";
 import {DuplicateEntryError, EntryNotFoundError} from "../../../core/types/Types";
 
 export const TripSchema = new Schema<Trip>({
-    trip_id: {
-        type: String, required: true, index: true, unique: true
-    },
-    route_id: {
-        type: String, required: true, index: true
-    },
-    service_id: {
-        type: String, required: true, index: true
-    },
+    trip_id: {type: String, required: true, index: true, unique: true},
+    route_id: {type: String, required: true, index: true},
+    service_id: {type: String, required: true, index: true},
     trip_headsign: String,
     trip_short_name: String,
     direction_id: Number,
@@ -56,7 +49,7 @@ export class MongoDBTripRepository implements TripRepository {
 
     async addTrip(trip: Trip): Promise<void> {
         try {
-            await TripModel.create(trip)
+            await (await TripModel.create(trip)).save()
         } catch (error) {
             if (error instanceof MongoError && error.code === 11000 /* DuplicateEntry */) {
                 throw new DuplicateEntryError(`Trip with trip_id: ${trip.trip_id} already exists)`);
@@ -73,7 +66,7 @@ export class MongoDBTripRepository implements TripRepository {
     }
 
     async deleteTrip(tripId: string): Promise<void> {
-        const result = await TripModel.deleteOne({trip_id: tripId})
+        const result = await TripModel.deleteOne({trip_id: tripId}).exec()
         if (result.deletedCount === 0) {
             throw new EntryNotFoundError(`Trip with trip_id: ${tripId} not found`)
         }
