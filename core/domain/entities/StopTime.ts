@@ -1,4 +1,5 @@
 import {PickupDropOffType} from "../types/PickupDropOffType";
+import {Timepoint} from "../types/Timepoint";
 
 /**
  * A model that represents a stop time as defined in the GTFS.
@@ -29,5 +30,5 @@ export interface StopTime {
 
     readonly shape_dist_traveled?: number;
 
-    readonly timepoint?: 0 | 1;
+    readonly timepoint?: Timepoint;
 }

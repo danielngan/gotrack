@@ -1,3 +1,5 @@
+import {ContinuousPickupDropOffType} from "../types/ContinuousPickupDropOffType";
+
 /**
  * A model representing a route as defined in the GTFS.
  */
@@ -16,6 +18,6 @@ export interface Route {
     readonly route_color?: string;
     readonly route_text_color?: string;
     readonly route_sort_order?: number;
-    readonly continuous_pickup?: 0 | 1 | 2;
-    readonly continuous_drop_off?: 0 | 1 | 2;
+    readonly continuous_pickup?: ContinuousPickupDropOffType;
+    readonly continuous_drop_off?: ContinuousPickupDropOffType;
 }

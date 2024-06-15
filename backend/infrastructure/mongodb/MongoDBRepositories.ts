@@ -1,9 +1,10 @@
-import {MongoDBRouteRepository} from "./MongoDBRouteRepository";
-import {MongoDBStopRepository} from "./MongoDBStopRepository";
-import {MongoDBStopTimeRepository} from "./MongoDBStopTimeRepository";
-import {MongoDBTripRepository} from "./MongoDBTripRepository";
+import {MongoDBRouteRepository, RouteModel} from "./MongoDBRouteRepository";
+import {MongoDBStopRepository, StopModel} from "./MongoDBStopRepository";
+import {MongoDBStopTimeRepository, StopTimeModel} from "./MongoDBStopTimeRepository";
+import {MongoDBTripRepository, TripModel} from "./MongoDBTripRepository";
 import {Repositories} from "../../application/repositories/Repositories";
 import {applyMixins} from "../../../core/utils/Utils";
+import {Model} from "mongoose";
 
 export interface MongoDBRepositories
     extends
@@ -22,6 +23,15 @@ export class MongoDBRepositories {
             this.clearAllStops(),
             this.clearAllStopTimes(),
             this.clearAllTrips()
+        ]);
+    }
+
+    async ensureIndexes(): Promise<void> {
+        await Promise.all([
+            RouteModel.ensureIndexes({background: false}),
+            StopModel.ensureIndexes({background: false}),
+            StopTimeModel.ensureIndexes({background: false}),
+            TripModel.ensureIndexes({background: false})
         ]);
     }
 }

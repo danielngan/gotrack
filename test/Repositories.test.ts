@@ -1,9 +1,6 @@
-import {Repositories} from "../backend/application/repositories/Repositories";
-import {getRepositoriesImplementations} from "./Repositories.setup";
+import {RepositoriesImplementations} from "./Repositories.setup";
 
-const repositoriesImplementations: Repositories[] = getRepositoriesImplementations();
-
-describe.each(repositoriesImplementations)('Repositories', (repo) => {
+describe.each(RepositoriesImplementations)('Repositories', (repo) => {
 
     beforeEach(async () => {
         await repo.clearAll();

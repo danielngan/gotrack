@@ -1,12 +1,9 @@
 import {Route} from "../core/domain/entities/Route";
 import {EntryNotFoundError} from "../core/application/exceptions/EntryNotFoundError";
-import {Repositories} from "../backend/application/repositories/Repositories";
-import {getRepositoriesImplementations} from "./Repositories.setup";
+import {RepositoriesImplementations} from "./Repositories.setup";
 import {DuplicateEntryError} from "../core/application/exceptions/DuplicateEntryError";
 
-const repositoriesImplementations: Repositories[] = getRepositoriesImplementations();
-
-describe.each(repositoriesImplementations)('RouteRepository', (repo) => {
+describe.each(RepositoriesImplementations)('RouteRepository', (repo) => {
 
     const sampleRoute: Route = {
         route_id: '1',

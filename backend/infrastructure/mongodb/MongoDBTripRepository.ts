@@ -1,11 +1,24 @@
 import {TripRepository} from "../../application/repositories/TripRepository";
 import {Trip} from "../../../core/domain/entities/Trip";
-import mongoose, {Schema} from "mongoose";
+import mongoose, {Model, Schema} from "mongoose";
 import {MongoError} from "mongodb";
 import {EntryNotFoundError} from "../../../core/application/exceptions/EntryNotFoundError";
 import {DuplicateEntryError} from "../../../core/application/exceptions/DuplicateEntryError";
+import {StopModel} from "./MongoDBStopRepository";
 
-export const TripSchema = new Schema<Trip>({
+import {
+    addEntry,
+    defaultSchemaOptions, defineSchema, deleteEntry, deleteManyEntries, findManyEntries, findOneEntry,
+    onDeleteNotFound,
+    onDuplicateEntry,
+    onUpdateNotFound,
+    toObject,
+    toObjects, updateEntry
+} from "./MongoDBUtils";
+import {WheelchairAccessible} from "../../../core/domain/types/WheelchairAccessible";
+import {BikesAllowed} from "../../../core/domain/types/BikesAllowed";
+
+export const [TripSchema, TripModel] = defineSchema<Trip>("Trip", {
     trip_id: {type: String, required: true, index: true, unique: true},
     route_id: {type: String, required: true, index: true},
     service_id: {type: String, required: true, index: true},
@@ -14,62 +27,41 @@ export const TripSchema = new Schema<Trip>({
     direction_id: Number,
     block_id: String,
     shape_id: String,
-    wheelchair_accessible: Number,
-    bikes_allowed: Number,
-}, {
-    versionKey: false,
-    toObject: {
-        transform: (doc, ret) => {
-            delete ret._id
-        }
-    }
+    wheelchair_accessible: {type: Number, enum: WheelchairAccessible},
+    bikes_allowed: {type: Number, enum: BikesAllowed},
 });
 
-export const TripModel = mongoose.model<Trip>('Trip', TripSchema);
-
 export class MongoDBTripRepository implements TripRepository {
-    async clearAllTrips(): Promise<void> {
-        await TripModel.deleteMany({}).exec();
-    }
 
     async getAllTrips(): Promise<Trip[]> {
-        return (await TripModel.find().exec()).map(document => document.toObject())
+        return await findManyEntries(TripModel, {})
     }
 
     async getTripById(tripId: string): Promise<Trip | undefined> {
-        return (await TripModel.findOne({trip_id: tripId}).exec())?.toObject() ?? undefined
+        return await findOneEntry(TripModel, {trip_id: tripId})
     }
 
     async getTripsByRouteId(routeId: string): Promise<Trip[]> {
-        return (await TripModel.find().where('route_id').equals(routeId).exec()).map(document => document.toObject())
+        return await findManyEntries(TripModel, {route_id: routeId})
     }
 
     async getTripsByServiceId(serviceId: string): Promise<Trip[]> {
-        return (await TripModel.find().where('service_id').equals(serviceId).exec()).map(document => document.toObject())
+        return await findManyEntries(TripModel, {service_id: serviceId})
     }
 
     async addTrip(trip: Trip): Promise<void> {
-        try {
-            await (await TripModel.create(trip)).save()
-        } catch (error) {
-            if (error instanceof MongoError && error.code === 11000 /* DuplicateEntry */) {
-                throw new DuplicateEntryError(`Trip with trip_id: ${trip.trip_id} already exists)`);
-            }
-            throw error;
-        }
+        await addEntry(TripModel, trip, {trip_id: trip.trip_id})
     }
 
     async updateTrip(trip: Partial<Trip> & Pick<Trip, "trip_id">): Promise<void> {
-        const result = await TripModel.updateOne({trip_id: trip.trip_id}, {$set: trip}).exec();
-        if (result.matchedCount === 0 || result.modifiedCount === 0) {
-            throw new EntryNotFoundError(`Trip with trip_id: ${trip.trip_id} not found`)
-        }
+        await updateEntry(TripModel, trip, {trip_id: trip.trip_id})
     }
 
     async deleteTrip(tripId: string): Promise<void> {
-        const result = await TripModel.deleteOne({trip_id: tripId}).exec()
-        if (result.deletedCount === 0) {
-            throw new EntryNotFoundError(`Trip with trip_id: ${tripId} not found`)
-        }
+        await deleteEntry(TripModel, {trip_id: tripId})
+    }
+
+    async clearAllTrips(): Promise<void> {
+        await deleteManyEntries(TripModel, {})
     }
 }
