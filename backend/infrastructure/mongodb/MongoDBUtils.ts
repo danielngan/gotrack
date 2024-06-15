@@ -1,7 +1,6 @@
 import mongoose, {
     Document,
     FlatRecord,
-    model,
     Model,
     Schema,
     SchemaDefinition,
@@ -11,8 +10,6 @@ import mongoose, {
 import {EntryNotFoundError} from "../../../core/application/exceptions/EntryNotFoundError";
 import {DeleteResult, MongoError, UpdateResult} from "mongodb";
 import {DuplicateEntryError} from "../../../core/application/exceptions/DuplicateEntryError";
-import {Route} from "../../../core/domain/entities/Route";
-import {ContinuousPickupDropOffType} from "../../../core/domain/types/ContinuousPickupDropOffType";
 
 export function defaultSchemaOptions<T>(): SchemaOptions<FlatRecord<T>> {
     return {

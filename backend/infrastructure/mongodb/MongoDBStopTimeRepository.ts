@@ -1,19 +1,14 @@
 import {StopTimeRepository} from "../../application/repositories/StopTimeRepository";
-import mongoose, {Model, Schema} from "mongoose";
 import {StopTime} from "../../../core/domain/entities/StopTime";
-import {MongoError} from "mongodb";
-import {EntryNotFoundError} from "../../../core/application/exceptions/EntryNotFoundError";
-import {DuplicateEntryError} from "../../../core/application/exceptions/DuplicateEntryError";
-import {StopModel} from "./MongoDBStopRepository";
 
 import {
     addEntry,
-    defaultSchemaOptions, defineSchema, deleteEntry, deleteManyEntries, findManyEntries, findOneEntry,
-    onDeleteNotFound,
-    onDuplicateEntry,
-    onUpdateNotFound,
-    toObject,
-    toObjects, updateEntry
+    defineSchema,
+    deleteEntry,
+    deleteManyEntries,
+    findManyEntries,
+    findOneEntry,
+    updateEntry
 } from "./MongoDBUtils";
 import {Timepoint} from "../../../core/domain/types/Timepoint";
 import {PickupDropOffType} from "../../../core/domain/types/PickupDropOffType";

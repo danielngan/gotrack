@@ -1,9 +1,8 @@
 import {RouteRepository} from "../../application/repositories/RouteRepository";
-import {Model, Schema, model} from "mongoose";
 import {Route} from "../../../core/domain/entities/Route";
 import {
     addEntry,
-    defaultSchemaOptions, defineSchema,
+    defineSchema,
     deleteEntry,
     deleteManyEntries,
     findManyEntries,

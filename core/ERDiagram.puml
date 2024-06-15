@@ -15,8 +15,8 @@ interface Route {
     route_color: string
     route_text_color: string
     route_sort_order: number
-    continuous_pickup: 0 | 1 | 2
-    continuous_drop_off: 0 | 1 | 2
+    continuous_pickup: ContinuousPickupDropOffType
+    continuous_drop_off: ContinuousPickupDropOffType
 }
 
 interface Stop {
@@ -32,7 +32,7 @@ interface Stop {
     location_type: LocationType
     parent_station: string
     stop_timezone: string
-    wheelchair_boarding: 0 | 1 | 2
+    wheelchair_boarding: WheelchairBoarding
 }
 
 interface StopTime {
@@ -46,7 +46,7 @@ interface StopTime {
     pickup_type: PickupDropOffType
     drop_off_type: PickupDropOffType
     shape_dist_traveled: number
-    timepoint: 0 | 1
+    timepoint: Timepoint
 }
 
 interface Trip {
