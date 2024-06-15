@@ -1,12 +1,9 @@
 import {StopTime} from "../core/domain/entities/StopTime";
 import {EntryNotFoundError} from "../core/application/exceptions/EntryNotFoundError";
-import {getRepositoriesImplementations} from "./Repositories.setup";
-import {Repositories} from "../backend/application/repositories/Repositories";
+import {RepositoriesImplementations} from "./Repositories.setup";
 import {DuplicateEntryError} from "../core/application/exceptions/DuplicateEntryError";
 
-const repositoriesImplementations: Repositories[] = getRepositoriesImplementations();
-
-describe.each(repositoriesImplementations)('StopTimeRepository Interface', (repo) => {
+describe.each(RepositoriesImplementations)('StopTimeRepository Interface', (repo) => {
 
     beforeEach(async () => {
         await repo.clearAllStopTimes()

@@ -1,11 +1,19 @@
 import {StopRepository} from "../../application/repositories/StopRepository";
-import mongoose, {Schema} from "mongoose";
 import {Stop} from "../../../core/domain/entities/Stop";
-import {MongoError} from "mongodb";
-import {EntryNotFoundError} from "../../../core/application/exceptions/EntryNotFoundError";
-import {DuplicateEntryError} from "../../../core/application/exceptions/DuplicateEntryError";
 
-export const StopSchema = new Schema<Stop>({
+import {
+    addEntry,
+    defineSchema,
+    deleteEntry,
+    deleteManyEntries,
+    findManyEntries,
+    findOneEntry,
+    updateEntry
+} from "./MongoDBUtils";
+import {LocationType} from "../../../core/domain/types/LocationType";
+import {WheelchairBoarding} from "../../../core/domain/types/WheelchairBoarding";
+
+export const [StopSchema, StopModel] = defineSchema<Stop>("Stop", {
     stop_id: {type: String, required: true, index: true, unique: true},
     stop_name: {type: String, required: true, index: true},
     stop_lat: {type: Number, required: true},
@@ -14,69 +22,44 @@ export const StopSchema = new Schema<Stop>({
     stop_desc: String,
     zone_id: String,
     stop_url: String,
-    location_type: Number,
+    location_type: {type: Number, enum: LocationType},
     parent_station: String,
     stop_timezone: String,
-    wheelchair_boarding: Number,
-}, {
-    versionKey: false,
-    toObject: {
-        transform: (doc, ret) => {
-            delete ret._id
-        }
-    }
+    wheelchair_boarding: {type: Number, enum: WheelchairBoarding},
 });
 
-export const StopModel = mongoose.model<Stop>('Stop', StopSchema);
-
 export class MongoDBStopRepository implements StopRepository {
-    async clearAllStops(): Promise<void> {
-        await StopModel.deleteMany().exec();
-    }
 
     async getAllStops(): Promise<Stop[]> {
-        return (await StopModel.find().exec()).map(document => document.toObject())
+        return await findManyEntries(StopModel, {})
     }
 
     async getStopById(stopId: string): Promise<Stop | undefined> {
-        return (await StopModel.findOne({stop_id: stopId}).exec())?.toObject()
+        return await findOneEntry(StopModel, {stop_id: stopId})
     }
 
     async searchStopsByName(namePattern: string): Promise<Stop[]> {
-        return (await StopModel.find({
-            stop_name: {
-                $regex: namePattern,
-                $options: "i"
-            }}).exec()).map(document => document.toObject())
+        return await findManyEntries(StopModel, {stop_name: {$regex: namePattern, $options: "i"}})
     }
 
     async getStopsByZoneId(zoneId: string): Promise<Stop[]> {
-        return (await StopModel.find({zone_id: zoneId}).exec()).map(document => document.toObject())
+        return await findManyEntries(StopModel, {zone_id: zoneId})
     }
 
     async addStop(stop: Stop): Promise<void> {
-        try {
-            await (await StopModel.create(stop)).save()
-        } catch (error) {
-            if (error instanceof MongoError && error.code === 11000 /* DuplicateKey */) {
-                throw new DuplicateEntryError(`Trying to add a Stop with a duplicate stop_id: ${stop.stop_id}`);
-            }
-            throw error;
-        }
+        await addEntry(StopModel, stop, {stop_id: stop.stop_id})
     }
 
     async updateStop(stop: Partial<Stop> & Pick<Stop, "stop_id">): Promise<void> {
-        const result = await StopModel.updateOne({stop_id: stop.stop_id}, {$set: stop}).exec();
-        if (result.matchedCount === 0 || result.modifiedCount === 0) {
-            throw new EntryNotFoundError(`Stop with stop_id: ${stop.stop_id} not found`)
-        }
+        await updateEntry(StopModel, stop, {stop_id: stop.stop_id})
     }
 
     async deleteStop(stopId: string): Promise<void> {
-        const result = await StopModel.deleteOne({stop_id: stopId}).exec()
-        if (result.deletedCount === 0) {
-            throw new EntryNotFoundError(`Stop with stop_id: ${stopId} not found`)
-        }
+        await deleteEntry(StopModel, {stop_id: stopId})
+    }
+
+    async clearAllStops(): Promise<void> {
+        await deleteManyEntries(StopModel, {})
     }
 
 }

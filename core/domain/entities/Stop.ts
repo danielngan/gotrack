@@ -1,4 +1,5 @@
 import {LocationType} from "../types/LocationType";
+import {WheelchairBoarding} from "../types/WheelchairBoarding";
 
 /**
  * A model that represents a stop on a route as defined in the GTFS.
@@ -19,6 +20,6 @@ export interface Stop {
     readonly location_type?: LocationType;
     readonly parent_station?: string;
     readonly stop_timezone?: string;
-    readonly wheelchair_boarding?: 0 | 1 | 2;
+    readonly wheelchair_boarding?: WheelchairBoarding;
 }
 

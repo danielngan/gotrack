@@ -1,12 +1,19 @@
 import {RouteRepository} from "../../application/repositories/RouteRepository";
-import mongoose, {Schema} from "mongoose";
+import {Model, Schema, model} from "mongoose";
 import {Route} from "../../../core/domain/entities/Route";
-import {EntryNotFoundError} from "../../../core/application/exceptions/EntryNotFoundError";
-import {MongoError} from "mongodb"
-import {DuplicateEntryError} from "../../../core/application/exceptions/DuplicateEntryError";
+import {
+    addEntry,
+    defaultSchemaOptions, defineSchema,
+    deleteEntry,
+    deleteManyEntries,
+    findManyEntries,
+    findOneEntry,
+    updateEntry
+} from "./MongoDBUtils";
+import {ContinuousPickupDropOffType} from "../../../core/domain/types/ContinuousPickupDropOffType";
 
-export const RouteSchema = new Schema<Route>({
-    route_id: {type: String, required: true, index: true, unique: true},
+export const [RouteSchema, RouteModel] = defineSchema<Route>("Route", {
+    route_id: {type: String, required: true, index: true, unique: true, },
     agency_id: {type: String, required: true},
     route_short_name: {type: String, required: true, index: true, unique: true},
     route_long_name: {type: String, required: true, index: true},
@@ -16,68 +23,41 @@ export const RouteSchema = new Schema<Route>({
     route_color: String,
     route_text_color: String,
     route_sort_order: Number,
-    continuous_pickup: Number,
-    continuous_drop_off: Number,
-}, {
-    versionKey: false,
-    toObject: {
-        transform: (doc, ret) => {
-            delete ret._id
-        }
-    }
+    continuous_pickup: { type: Number, enum: ContinuousPickupDropOffType },
+    continuous_drop_off: {type: Number, enum: ContinuousPickupDropOffType},
 });
-
-export const RouteModel = mongoose.model<Route>('Route', RouteSchema);
 
 export class MongoDBRouteRepository implements RouteRepository {
 
     async getAllRoutes(): Promise<Route[]> {
-        return (await RouteModel.find().exec()).map(document => document.toObject())
+        return await findManyEntries(RouteModel, {})
     }
 
     async getRouteById(routeId: string): Promise<Route | undefined> {
-        return (await RouteModel.findOne({route_id: routeId}).exec())?.toObject() ?? undefined
+        return await findOneEntry(RouteModel, {route_id: routeId})
     }
 
     async getRouteByShortName(shortName: string): Promise<Route | undefined> {
-        return (await RouteModel.findOne({route_short_name: shortName}).exec())?.toObject() ?? undefined
+        return await findOneEntry(RouteModel, {route_short_name: shortName})
     }
 
     async searchRoutesByLongName(namePattern: string): Promise<Route[]> {
-        return (await RouteModel.find({
-            route_long_name: {
-                $regex: namePattern,
-                $options: "i"
-            }
-        }).exec()).map(document => document.toObject())
+        return await findManyEntries(RouteModel, {route_long_name: {$regex: namePattern, $options: "i"}})
     }
 
     async addRoute(route: Route): Promise<void> {
-        try {
-            await (await RouteModel.create(route)).save()
-        } catch (error) {
-            if (error instanceof MongoError && error.code === 11000 /* DuplicateEntry */) {
-                throw new DuplicateEntryError(`Route with route_id: ${route.route_id} already exists)`);
-            }
-            throw error;
-        }
+        await addEntry(RouteModel, route, {route_id: route.route_id})
     }
 
     async updateRoute(route: Partial<Route> & Pick<Route, "route_id">): Promise<void> {
-        const result = await RouteModel.updateOne({route_id: route.route_id}, {$set: route}).exec();
-        if (result.matchedCount === 0 || result.modifiedCount === 0) {
-            throw new EntryNotFoundError(`Route with route_id: ${route.route_id} not found`)
-        }
+        await updateEntry(RouteModel, route, {route_id: route.route_id})
     }
 
     async deleteRoute(routeId: string): Promise<void> {
-        const result = await RouteModel.deleteOne({route_id: routeId}).exec()
-        if (result.deletedCount === 0) {
-            throw new EntryNotFoundError(`Route with route_id: ${routeId} not found`)
-        }
+        await deleteEntry(RouteModel, {route_id: routeId})
     }
 
     async clearAllRoutes(): Promise<void> {
-        await RouteModel.deleteMany({}).exec()
+        await deleteManyEntries(RouteModel, {})
     }
 }

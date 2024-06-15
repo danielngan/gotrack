@@ -19,7 +19,7 @@ export class ExpressServer {
 
     }
 
-    public start(port: number): http.Server {
+    public start(port: number, hostname: string = "0.0.0.0"): http.Server {
         for (const interactor of this.interactors) {
             const path = "/" + interactor.useCase.constructor.name;
             this.app.post(path, async (req: Request, res: Response) => {
@@ -31,10 +31,10 @@ export class ExpressServer {
                     res.status(500).json({ error: error.toString() });
                 }
             });
-            console.log("Registered POST " + path);
+            console.log(`Interactor for use case ${interactor.useCase} exposed as path: ` + path);
         }
-        return this.app.listen(port, () => {
-            console.log(`Server running at http://localhost:${port}`);
+        return this.app.listen(port, hostname, () => {
+            console.log(`Server running at http://${hostname}:${port}`);
         });
     }
 }

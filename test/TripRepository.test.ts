@@ -1,12 +1,9 @@
 import {Trip} from "../core/domain/entities/Trip";
 import {EntryNotFoundError} from "../core/application/exceptions/EntryNotFoundError";
-import {getRepositoriesImplementations} from "./Repositories.setup";
-import {Repositories} from "../backend/application/repositories/Repositories";
+import {RepositoriesImplementations} from "./Repositories.setup";
 import {DuplicateEntryError} from "../core/application/exceptions/DuplicateEntryError";
 
-const repositoriesImplementations: Repositories[] = getRepositoriesImplementations();
-
-describe.each(repositoriesImplementations)('TripRepository Interface', (repo) => {
+describe.each(RepositoriesImplementations)('TripRepository Interface', (repo) => {
 
     beforeEach(async () => {
         await repo.clearAllTrips()
