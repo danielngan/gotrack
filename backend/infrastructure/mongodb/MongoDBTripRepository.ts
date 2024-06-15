@@ -1,19 +1,14 @@
 import {TripRepository} from "../../application/repositories/TripRepository";
 import {Trip} from "../../../core/domain/entities/Trip";
-import mongoose, {Model, Schema} from "mongoose";
-import {MongoError} from "mongodb";
-import {EntryNotFoundError} from "../../../core/application/exceptions/EntryNotFoundError";
-import {DuplicateEntryError} from "../../../core/application/exceptions/DuplicateEntryError";
-import {StopModel} from "./MongoDBStopRepository";
 
 import {
     addEntry,
-    defaultSchemaOptions, defineSchema, deleteEntry, deleteManyEntries, findManyEntries, findOneEntry,
-    onDeleteNotFound,
-    onDuplicateEntry,
-    onUpdateNotFound,
-    toObject,
-    toObjects, updateEntry
+    defineSchema,
+    deleteEntry,
+    deleteManyEntries,
+    findManyEntries,
+    findOneEntry,
+    updateEntry
 } from "./MongoDBUtils";
 import {WheelchairAccessible} from "../../../core/domain/types/WheelchairAccessible";
 import {BikesAllowed} from "../../../core/domain/types/BikesAllowed";

@@ -4,7 +4,6 @@ import {MongoDBStopTimeRepository, StopTimeModel} from "./MongoDBStopTimeReposit
 import {MongoDBTripRepository, TripModel} from "./MongoDBTripRepository";
 import {Repositories} from "../../application/repositories/Repositories";
 import {applyMixins} from "../../../core/utils/Utils";
-import {Model} from "mongoose";
 
 export interface MongoDBRepositories
     extends
