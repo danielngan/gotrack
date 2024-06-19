@@ -6,7 +6,7 @@ import {DuplicateEntryError} from "../core/application/exceptions/DuplicateEntry
 describe.each(RepositoriesImplementations)('StopRepository Interface', (repo) => {
 
     beforeEach(async () => {
-        await repo.clearAllStops()
+        await repo.deleteAllStops()
     });
 
     it('should add and retrieve a stop', async () => {
@@ -104,7 +104,7 @@ describe.each(RepositoriesImplementations)('StopRepository Interface', (repo) =>
             stop_lon: -75.0
         };
         await repo.addStop(stop);
-        await repo.clearAllStops();
+        await repo.deleteAllStops();
         const allStops = await repo.getAllStops();
         expect(allStops).toHaveLength(0);
     });

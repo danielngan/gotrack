@@ -3,7 +3,7 @@ import {RepositoriesImplementations} from "./Repositories.setup";
 describe.each(RepositoriesImplementations)('Repositories', (repo) => {
 
     beforeEach(async () => {
-        await repo.clearAll();
+        await repo.deleteAll();
     });
 
     it('should clear all data', async () => {
@@ -69,7 +69,7 @@ describe.each(RepositoriesImplementations)('Repositories', (repo) => {
         expect(await repo.getAllStops()).toHaveLength(2);
         expect(await repo.getAllTrips()).toHaveLength(2);
         expect(await repo.getAllStopTimes()).toHaveLength(2);
-        await repo.clearAll();
+        await repo.deleteAll();
         expect(await repo.getAllRoutes()).toHaveLength(0);
         expect(await repo.getAllStops()).toHaveLength(0);
         expect(await repo.getAllTrips()).toHaveLength(0);

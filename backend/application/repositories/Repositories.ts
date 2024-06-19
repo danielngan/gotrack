@@ -6,10 +6,12 @@ import {Trip} from "../../../core/domain/entities/Trip";
 import {StopTime} from "../../../core/domain/entities/StopTime";
 import {Stop} from "../../../core/domain/entities/Stop";
 import {
-    QueryTripsByServicesOfRoute,
-    QueryTripsByServicesOfRouteInput,
-    QueryTripsByServicesOfRouteOutput
-} from "../../../core/application/usecases/QueryTripsByServicesOfRoute";
+    QueryTripsGroupedByServices,
+    QueryTripsGroupedByServicesInput,
+    QueryTripsGroupedByServicesOutput
+} from "../../../core/application/usecases/QueryTripsGroupedByServices";
+import {CalendarDateRepository} from "./CalendarDateRepository";
+import {ShapeRepository} from "./ShapeRepository";
 
 
 /**
@@ -20,7 +22,9 @@ import {
  */
 export interface Repositories
     extends
+        CalendarDateRepository,
         RouteRepository,
+        ShapeRepository,
         StopRepository,
         StopTimeRepository,
         StopRepository,
@@ -30,7 +34,7 @@ export interface Repositories
      * Clears all repositories. This method deletes all data from all repositories.
      * This method is useful for testing purposes, and should not be used in production.
      */
-    clearAll(): Promise<void>;
+    deleteAll(): Promise<void>;
 
-    queryTripsByServicesOfRoute(input: QueryTripsByServicesOfRouteInput): Promise<QueryTripsByServicesOfRouteOutput>
+    queryTripsGroupedByServices(input: QueryTripsGroupedByServicesInput): Promise<QueryTripsGroupedByServicesOutput>
 }

@@ -40,41 +40,41 @@ export function toObjects<T>(documents: Document<unknown, {}, T>[]): T[] {
     return documents.map(document => document.toObject())
 }
 
-export function onUpdateNotFound<T>(model: Model<T>, keys: {}): (result: UpdateResult) => void {
+export function onUpdateNotFound<T>(model: Model<T>, key: {}): (result: UpdateResult) => void {
     return (result: UpdateResult) => {
         if (result.matchedCount === 0 || result.modifiedCount === 0) {
-            throw new EntryNotFoundError(`Entry ${model.name} with keys: ${JSON.stringify(keys)} not found`)
+            throw new EntryNotFoundError(`Entry ${model.name} with key: ${JSON.stringify(key)} not found`)
         }
     }
 }
 
-export function onDeleteNotFound<T>(model: Model<T>, keys: {}): (result: DeleteResult) => void {
+export function onDeleteNotFound<T>(model: Model<T>, key: {}): (result: DeleteResult) => void {
     return (result: DeleteResult) => {
         if (result.deletedCount === 0) {
-            throw new EntryNotFoundError(`Entry ${model.name} with keys: ${JSON.stringify(keys)} not found`)
+            throw new EntryNotFoundError(`Entry ${model.name} with key: ${JSON.stringify(key)} not found`)
         }
     }
 }
 
-export function onDuplicateEntry<T>(model: Model<T>, keys: {}): (error: Error) => void {
+export function onDuplicateEntry<T>(model: Model<T>, key: {}): (error: Error) => void {
     return (error: Error) => {
         if (error instanceof MongoError && error.code === 11000 /* DuplicateEntry */) {
-            throw new DuplicateEntryError(`Entry ${model.name} with keys: ${JSON.stringify(keys)} already exists`);
+            throw new DuplicateEntryError(`Entry ${model.name} with key: ${JSON.stringify(key)} already exists`);
         }
         throw error;
     }
 }
 
-export async function addEntry<T>(model: Model<T>, entry: T, keys: {}): Promise<void> {
-    await model.create(entry).then().catch(onDuplicateEntry(model, keys))
+export async function addEntry<T>(model: Model<T>, entry: T, key: {}): Promise<void> {
+    await model.create(entry).then().catch(onDuplicateEntry(model, key))
 }
 
-export async function updateEntry<T>(model: Model<T>, entry: Partial<T>, keys: {}): Promise<void> {
-    await model.updateOne(keys, {$set: entry}).exec().then(onUpdateNotFound(model, keys))
+export async function updateEntry<T>(model: Model<T>, entry: Partial<T>, key: {}): Promise<void> {
+    await model.updateOne(key, {$set: entry}).exec().then(onUpdateNotFound(model, key))
 }
 
-export async function deleteEntry<T>(model: Model<T>, keys: {}): Promise<void> {
-    await model.deleteOne(keys).exec().then(onDeleteNotFound(model, keys))
+export async function deleteEntry<T>(model: Model<T>, key: {}): Promise<void> {
+    await model.deleteOne(key).exec().then(onDeleteNotFound(model, key))
 }
 
 export async function findOneEntry<T>(model: Model<T>, filter: {}): Promise<T | undefined> {

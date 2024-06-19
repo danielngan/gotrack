@@ -56,7 +56,7 @@ export class MongoDBRouteRepository implements RouteRepository {
         await deleteEntry(RouteModel, {route_id: routeId})
     }
 
-    async clearAllRoutes(): Promise<void> {
+    async deleteAllRoutes(): Promise<void> {
         await deleteManyEntries(RouteModel, {})
     }
 }

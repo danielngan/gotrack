@@ -66,5 +66,5 @@ export interface RouteRepository {
      * This method is useful for testing purposes, and should not be used in production.
      * @returns a promise that resolves when all routes have been deleted
      */
-    clearAllRoutes(): Promise<void>;
+    deleteAllRoutes(): Promise<void>;
 }

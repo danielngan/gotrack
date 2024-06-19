@@ -58,7 +58,7 @@ export class MongoDBStopRepository implements StopRepository {
         await deleteEntry(StopModel, {stop_id: stopId})
     }
 
-    async clearAllStops(): Promise<void> {
+    async deleteAllStops(): Promise<void> {
         await deleteManyEntries(StopModel, {})
     }
 

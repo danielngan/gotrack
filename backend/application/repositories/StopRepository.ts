@@ -61,5 +61,5 @@ export interface StopRepository {
      * This method is useful for testing purposes, and should not be used in production.
      * @returns A promise that resolves when all stops have been deleted.
      */
-    clearAllStops(): Promise<void>;
+    deleteAllStops(): Promise<void>;
 }
