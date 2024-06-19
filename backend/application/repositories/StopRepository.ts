@@ -16,7 +16,7 @@ export interface StopRepository {
      * @param stopId The ID of the stop to get.
      * @returns A promise that resolves to the stop with the given ID, or undefined if no such stop exists.
      */
-    getStopById(stopId: string): Promise<Stop | undefined>;
+    getStop(stopId: string): Promise<Stop | undefined>;
 
     /**
      * Search stops by name.
@@ -57,7 +57,8 @@ export interface StopRepository {
     deleteStop(stopId: string): Promise<void>;
 
     /**
-     * Delete all stops.
+     * Delete all stops. This method deletes all stops from the repository.
+     * This method is useful for testing purposes, and should not be used in production.
      * @returns A promise that resolves when all stops have been deleted.
      */
     clearAllStops(): Promise<void>;

@@ -15,8 +15,8 @@ import {BikesAllowed} from "../../../core/domain/types/BikesAllowed";
 
 export const [TripSchema, TripModel] = defineSchema<Trip>("Trip", {
     trip_id: {type: String, required: true, index: true, unique: true},
-    route_id: {type: String, required: true, index: true},
-    service_id: {type: String, required: true, index: true},
+    route_id: {type: String, required: true},
+    service_id: {type: String, required: true},
     trip_headsign: String,
     trip_short_name: String,
     direction_id: Number,
@@ -26,13 +26,15 @@ export const [TripSchema, TripModel] = defineSchema<Trip>("Trip", {
     bikes_allowed: {type: Number, enum: BikesAllowed},
 });
 
+TripSchema.index({route_id: 1, service_id: 1});
+
 export class MongoDBTripRepository implements TripRepository {
 
     async getAllTrips(): Promise<Trip[]> {
         return await findManyEntries(TripModel, {})
     }
 
-    async getTripById(tripId: string): Promise<Trip | undefined> {
+    async getTrip(tripId: string): Promise<Trip | undefined> {
         return await findOneEntry(TripModel, {trip_id: tripId})
     }
 
@@ -40,8 +42,8 @@ export class MongoDBTripRepository implements TripRepository {
         return await findManyEntries(TripModel, {route_id: routeId})
     }
 
-    async getTripsByServiceId(serviceId: string): Promise<Trip[]> {
-        return await findManyEntries(TripModel, {service_id: serviceId})
+    async getTripsByRouteAndServiceId(routeId: string, serviceId: string): Promise<Trip[]> {
+        return await findManyEntries(TripModel, {route_id: routeId, service_id: serviceId})
     }
 
     async addTrip(trip: Trip): Promise<void> {

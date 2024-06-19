@@ -14,12 +14,12 @@ import {Timepoint} from "../../../core/domain/types/Timepoint";
 import {PickupDropOffType} from "../../../core/domain/types/PickupDropOffType";
 
 
-export const [StopTimeSchema, StopTimeModel] = defineSchema<StopTime>("StopTime", {
-    stop_id: {type: String, required: true},
+export const [StopTimeSchema, StopTimeModel] = defineSchema<StopTime>("Stop_Time", {
     trip_id: {type: String, required: true},
+    stop_sequence: {type: Number, required: true},
+    stop_id: {type: String, required: true},
     arrival_time: {type: String, required: true},
     departure_time: {type: String, required: true},
-    stop_sequence: {type: Number, required: true},
     stop_headsign: String,
     pickup_type: {type: Number, enum: PickupDropOffType},
     drop_off_type: {type: Number, enum: PickupDropOffType},
@@ -27,7 +27,7 @@ export const [StopTimeSchema, StopTimeModel] = defineSchema<StopTime>("StopTime"
     timepoint: {type: Number, enum: Timepoint},
 });
 
-StopTimeSchema.index({stop_id: 1, trip_id: 1}, {unique: true});
+StopTimeSchema.index({trip_id: 1, stop_sequence: 1}, {unique: true});
 
 export class MongoDBStopTimeRepository implements StopTimeRepository {
 
@@ -35,12 +35,8 @@ export class MongoDBStopTimeRepository implements StopTimeRepository {
         return await findManyEntries(StopTimeModel, {})
     }
 
-    async getStopTimeById(stopId: string, tripId: string): Promise<StopTime | undefined> {
-        return await findOneEntry(StopTimeModel, {stop_id: stopId, trip_id: tripId})
-    }
-
-    async getStopTimesByStopId(stopId: string): Promise<StopTime[]> {
-        return await findManyEntries(StopTimeModel, {stop_id: stopId})
+    async getStopTime(tripId: string, stopSequence: number): Promise<StopTime | undefined> {
+        return await findOneEntry(StopTimeModel, {trip_id: tripId, stop_sequence: stopSequence})
     }
 
     async getStopTimesByTripId(tripId: string): Promise<StopTime[]> {
@@ -48,15 +44,15 @@ export class MongoDBStopTimeRepository implements StopTimeRepository {
     }
 
     async addStopTime(stopTime: StopTime): Promise<void> {
-        await addEntry(StopTimeModel, stopTime, {stop_id: stopTime.stop_id, trip_id: stopTime.trip_id})
+        await addEntry(StopTimeModel, stopTime, {trip_id: stopTime.trip_id, stop_sequence: stopTime.stop_sequence})
     }
 
-    async updateStopTime(stopTime: Partial<StopTime> & Pick<StopTime, "stop_id" | "trip_id">): Promise<void> {
-        await updateEntry(StopTimeModel, stopTime, {stop_id: stopTime.stop_id, trip_id: stopTime.trip_id})
+    async updateStopTime(stopTime: Partial<StopTime> & Pick<StopTime, "trip_id" | "stop_sequence">): Promise<void> {
+        await updateEntry(StopTimeModel, stopTime, {trip_id: stopTime.trip_id, stop_sequence: stopTime.stop_sequence})
     }
 
-    async deleteStopTime(stopId: string, tripId: string): Promise<void> {
-        await deleteEntry(StopTimeModel, {stop_id: stopId, trip_id: tripId})
+    async deleteStopTime(tripId: string, stopSequence: number): Promise<void> {
+        await deleteEntry(StopTimeModel, {trip_id: tripId, stop_sequence: stopSequence})
     }
 
     async clearAllStopTimes(): Promise<void> {

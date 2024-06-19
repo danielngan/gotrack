@@ -12,19 +12,14 @@ export interface StopTimeRepository {
     getAllStopTimes(): Promise<StopTime[]>;
 
     /**
-     * Get a stop time by its stop ID and trip ID.
-     * @param stopId The ID of the stop to get.
-     * @param tripId The ID of the trip to get.
-     * @returns A promise that resolves to the stop time with the given stop ID and trip ID, or undefined if no such stop time exists.
+     * Get a stop time by trip ID and stop sequence. If no stop time with the given trip ID and stop sequence exists,
+     * the method returns undefined.
+     * @param tripId
+     * @param stopSequence
+     * @returns A promise that resolves to the stop time with the given trip ID and stop sequence,
+     *          or undefined if no such stop time exists.
      */
-    getStopTimeById(stopId: string, tripId: string): Promise<StopTime | undefined>;
-
-    /**
-     * Get all stop times for a stop.
-     * @param stopId The ID of the stop to get stop times for.
-     * @returns A promise that resolves to an array of all stop times for the given stop.
-     */
-    getStopTimesByStopId(stopId: string): Promise<StopTime[]>;
+    getStopTime(tripId: string, stopSequence: number): Promise<StopTime | undefined>;
 
     /**
      * Get all stop times for a trip.
@@ -37,29 +32,29 @@ export interface StopTimeRepository {
      * Add a stop time.
      * @param stopTime The stop time to add.
      * @returns A promise that resolves when the stop time has been added.
-     * @throws DuplicateEntryError If a stop time with the same stop ID and trip ID already exists.
+     * @throws DuplicateEntryError If a stop time with the same trip ID and stop sequence already exists.
      */
     addStopTime(stopTime: StopTime): Promise<void>;
 
     /**
-     * Update a stop time. The stop time must have a stop ID and trip ID; other properties are optional.
-     * @param stopTime The stop time to update; must have a stop_id and trip_id property.
+     * Update a stop time. The stop time must have a trip ID and stop sequence; other properties are optional.
+     * @param stopTime The stop time to update; must have a trip_id and stop_sequence property.
      * @returns A promise that resolves when the stop time has been updated.
-     * @throws EntryNotFoundError If no stop time with the given stop ID and trip ID exists.
      */
-    updateStopTime(stopTime: Partial<StopTime> & Pick<StopTime, "stop_id" | "trip_id">): Promise<void>;
+    updateStopTime(stopTime: Partial<StopTime> & Pick<StopTime, "trip_id" | "stop_sequence">): Promise<void>;
 
     /**
-     * Delete a stop time.
-     * @param stopId The ID of the stop to delete.
-     * @param tripId The ID of the trip to delete.
+     * Delete a stop time by trip ID and stop sequence. If no stop time with the given trip ID and stop sequence exists,
+     * the method throws EntryNotFoundError.
+     * @param tripId The ID of the trip the stop time belongs to.
+     * @param stopSequence The stop sequence of the stop time to delete.
      * @returns A promise that resolves when the stop time has been deleted.
-     * @throws EntryNotFoundError If no stop time with the given stop ID and trip ID exists.
      */
-    deleteStopTime(stopId: string, tripId: string): Promise<void>;
+    deleteStopTime(tripId: string, stopSequence: number): Promise<void>;
 
     /**
-     * Delete all stop times.
+     * Delete all stop times. This method deletes all stop times from the repository.
+     * It is useful for testing purposes, and should not be used in production.
      * @returns A promise that resolves when all stop times have been deleted.
      */
     clearAllStopTimes(): Promise<void>;

@@ -14,7 +14,7 @@ export class MockRepositories implements Repositories {
         return this.routes;
     }
 
-    async getRouteById(routeId: string): Promise<Route | undefined> {
+    async getRoute(routeId: string): Promise<Route | undefined> {
         return this.routes.find(route => route.route_id === routeId);
     }
 
@@ -61,7 +61,7 @@ export class MockRepositories implements Repositories {
         return this.stops;
     }
 
-    async getStopById(stopId: string): Promise<Stop | undefined> {
+    async getStop(stopId: string): Promise<Stop | undefined> {
         return this.stops.find(stop => stop.stop_id === stopId);
     }
 
@@ -108,12 +108,8 @@ export class MockRepositories implements Repositories {
         return this.stopTimes;
     }
 
-    async getStopTimeById(stopId: string, tripId: string): Promise<StopTime | undefined> {
-        return this.stopTimes.find(stopTime => stopTime.stop_id === stopId && stopTime.trip_id === tripId);
-    }
-
-    async getStopTimesByStopId(stopId: string): Promise<StopTime[]> {
-        return this.stopTimes.filter(stopTime => stopTime.stop_id === stopId);
+    async getStopTime(tripId: string, stopSequence: number): Promise<StopTime | undefined> {
+        return this.stopTimes.find(stopTime => stopTime.trip_id === tripId && stopTime.stop_sequence === stopSequence);
     }
 
     async getStopTimesByTripId(tripId: string): Promise<StopTime[]> {
@@ -121,24 +117,24 @@ export class MockRepositories implements Repositories {
     }
 
     async addStopTime(stopTime: StopTime): Promise<void> {
-        if (this.stopTimes.find(st => st.stop_id === stopTime.stop_id && st.trip_id === stopTime.trip_id)) {
-            throw new DuplicateEntryError(`StopTime with stop ID ${stopTime.stop_id} and trip ID ${stopTime.trip_id} already exists`)
+        if (this.stopTimes.find(st => st.trip_id === stopTime.trip_id && st.stop_sequence === stopTime.stop_sequence)) {
+            throw new DuplicateEntryError(`StopTime with trip ID ${stopTime.trip_id} and stop sequence ${stopTime.stop_sequence} already exists`)
         }
         this.stopTimes.push(stopTime);
     }
 
-    async updateStopTime(stopTime: Partial<StopTime> & { stop_id: string, trip_id: string }): Promise<void> {
-        const index = this.stopTimes.findIndex(st => st.stop_id === stopTime.stop_id && st.trip_id === stopTime.trip_id);
+    async updateStopTime(stopTime: Partial<StopTime> & Pick<StopTime, "trip_id" | "stop_sequence">): Promise<void> {
+        const index = this.stopTimes.findIndex(st => st.trip_id === stopTime.trip_id && st.stop_sequence === stopTime.stop_sequence);
         if (index === -1) {
-            throw new EntryNotFoundError(`StopTime with stop ID ${stopTime.stop_id} and trip ID ${stopTime.trip_id} not found`)
+            throw new EntryNotFoundError(`StopTime with trip ID ${stopTime.trip_id} and stop sequence ${stopTime.stop_sequence} not found`)
         }
         this.stopTimes[index] = { ...this.stopTimes[index], ...stopTime };
     }
 
-    async deleteStopTime(stopId: string, tripId: string): Promise<void> {
-        const index = this.stopTimes.findIndex(st => st.stop_id === stopId && st.trip_id === tripId);
+    async deleteStopTime(tripId: string, stopSequence: number): Promise<void> {
+        const index = this.stopTimes.findIndex(st => st.trip_id === tripId && st.stop_sequence === stopSequence);
         if (index === -1) {
-            throw new EntryNotFoundError(`StopTime with stop ID ${stopId} and trip ID ${tripId} not found`)
+            throw new EntryNotFoundError(`StopTime with trip ID ${tripId} and stop sequence ${stopSequence} not found`)
         }
         this.stopTimes.splice(index, 1);
     }
@@ -155,7 +151,7 @@ export class MockRepositories implements Repositories {
         return this.trips;
     }
 
-    async getTripById(tripId: string): Promise<Trip | undefined> {
+    async getTrip(tripId: string): Promise<Trip | undefined> {
         return this.trips.find(trip => trip.trip_id === tripId);
     }
 
@@ -163,8 +159,8 @@ export class MockRepositories implements Repositories {
         return this.trips.filter(trip => trip.route_id === routeId)
     }
 
-    async getTripsByServiceId(serviceId: string): Promise<Trip[]> {
-        return this.trips.filter(trip => trip.service_id === serviceId)
+    async getTripsByRouteAndServiceId(routeId: string, serviceId: string): Promise<Trip[]> {
+        return this.trips.filter(trip => trip.route_id === routeId && trip.service_id === serviceId)
     }
 
     async addTrip(trip: Trip): Promise<void> {
@@ -199,6 +195,10 @@ export class MockRepositories implements Repositories {
         await this.clearAllStops();
         await this.clearAllStopTimes();
         await this.clearAllTrips();
+    }
+
+    getTripsWithStopTimesByRouteId(routeId: string): Promise<Array<Trip & { stop_times: Array<StopTime> }>> {
+        return Promise.resolve([]);
     }
 
 }

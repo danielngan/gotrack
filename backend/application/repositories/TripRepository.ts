@@ -16,7 +16,7 @@ export interface TripRepository {
      * @param tripId The ID of the trip to get.
      * @returns A promise that resolves to the trip with the given ID, or undefined if no such trip exists.
      */
-    getTripById(tripId: string): Promise<Trip | undefined>;
+    getTrip(tripId: string): Promise<Trip | undefined>;
 
     /**
      * Get all trips for a route.
@@ -26,11 +26,12 @@ export interface TripRepository {
     getTripsByRouteId(routeId: string): Promise<Trip[]>;
 
     /**
-     * Get all trips for a service.
+     * Get all trips for a service of a route.
+     * @param routeId The ID of the service to get trips for.
      * @param serviceId The ID of the service to get trips for.
      * @returns A promise that resolves to an array of all trips for the given service.
      */
-    getTripsByServiceId(serviceId: string): Promise<Trip[]>;
+    getTripsByRouteAndServiceId(routeId: string, serviceId: string): Promise<Trip[]>;
 
     /**
      * Add a trip.
@@ -57,7 +58,8 @@ export interface TripRepository {
     deleteTrip(tripId: string): Promise<void>;
 
     /**
-     * Delete all trips.
+     * Delete all trips. This method deletes all trips from the repository.
+     * It is recommended to use this method only for testing purposes, and not in production.
      * @returns A promise that resolves when all trips have been deleted.
      */
     clearAllTrips(): Promise<void>;

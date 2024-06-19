@@ -10,3 +10,7 @@ export function applyMixins(derivedCtor: any, constructors: any[]) {
         });
     });
 }
+
+export function error(message: string): never {
+    throw new Error(message);
+}

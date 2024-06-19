@@ -39,12 +39,12 @@ describe.each(RepositoriesImplementations)('RouteRepository', (repo) => {
 
     it('should return the route with the given ID', async () => {
         await repo.addRoute(sampleRoute);
-        const route = await repo.getRouteById('1');
+        const route = await repo.getRoute('1');
         expect(route).toEqual(sampleRoute);
     });
 
     it('should return undefined if no route with the given ID exists', async () => {
-        const route = await repo.getRouteById('999');
+        const route = await repo.getRoute('999');
         expect(route).toBeUndefined();
     });
 
@@ -97,7 +97,7 @@ describe.each(RepositoriesImplementations)('RouteRepository', (repo) => {
         await repo.addRoute(sampleRoute);
         const updatedRoute = { ...sampleRoute, route_long_name: 'Updated Long Name' };
         await repo.updateRoute(updatedRoute);
-        const route = await repo.getRouteById('1');
+        const route = await repo.getRoute('1');
         expect(route?.route_long_name).toBe('Updated Long Name');
         expect(route).toEqual(updatedRoute);
     });
@@ -106,7 +106,7 @@ describe.each(RepositoriesImplementations)('RouteRepository', (repo) => {
         await repo.addRoute(sampleRoute);
         const updatedRoute = { route_id: '1', route_long_name: 'Updated Long Name' };
         await repo.updateRoute(updatedRoute);
-        const route = await repo.getRouteById('1');
+        const route = await repo.getRoute('1');
         expect(route?.route_long_name).toBe('Updated Long Name');
         expect(route?.route_short_name).toBe(sampleRoute.route_short_name);
     });

@@ -32,7 +32,7 @@ export class MongoDBRouteRepository implements RouteRepository {
         return await findManyEntries(RouteModel, {})
     }
 
-    async getRouteById(routeId: string): Promise<Route | undefined> {
+    async getRoute(routeId: string): Promise<Route | undefined> {
         return await findOneEntry(RouteModel, {route_id: routeId})
     }
 

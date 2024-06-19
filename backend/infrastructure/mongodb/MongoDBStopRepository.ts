@@ -34,7 +34,7 @@ export class MongoDBStopRepository implements StopRepository {
         return await findManyEntries(StopModel, {})
     }
 
-    async getStopById(stopId: string): Promise<Stop | undefined> {
+    async getStop(stopId: string): Promise<Stop | undefined> {
         return await findOneEntry(StopModel, {stop_id: stopId})
     }
 
