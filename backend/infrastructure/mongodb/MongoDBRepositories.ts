@@ -4,16 +4,22 @@ import {MongoDBStopTimeRepository, StopTimeModel} from "./MongoDBStopTimeReposit
 import {MongoDBTripRepository, TripModel} from "./MongoDBTripRepository";
 import {Repositories} from "../../application/repositories/Repositories";
 import {applyMixins} from "../../../core/utils/Utils";
-import {Trip} from "../../../core/domain/entities/Trip";
-import {StopTime} from "../../../core/domain/entities/StopTime";
-import {Stop} from "../../../core/domain/entities/Stop";
-import {QueryTripsByServicesOfRouteInput, QueryTripsByServicesOfRouteOutput} from "../../../core/application/usecases/QueryTripsByServicesOfRoute";
+import {
+    QueryTripsGroupedByServicesInput,
+    QueryTripsGroupedByServicesOutput
+} from "../../../core/application/usecases/QueryTripsGroupedByServices";
 import {toObject} from "./MongoDBUtils";
 import {Route} from "../../../core/domain/entities/Route";
+import {MongoDBCalendarRepository} from "./MongoDBCalendarRepository";
+import {MongoDBCalendarDateRepository} from "./MongoDBCalendarDateRepository";
+import {MongoDBShapeRepository} from "./MongoDBShapeRepository";
 
 export interface MongoDBRepositories
     extends
+        MongoDBCalendarRepository,
+        MongoDBCalendarDateRepository,
         MongoDBRouteRepository,
+        MongoDBShapeRepository,
         MongoDBStopRepository,
         MongoDBStopTimeRepository,
         MongoDBTripRepository,
@@ -22,7 +28,7 @@ export interface MongoDBRepositories
 
 export class MongoDBRepositories implements Repositories {
 
-    async queryTripsByServicesOfRoute(input: QueryTripsByServicesOfRouteInput): Promise<QueryTripsByServicesOfRouteOutput> {
+    async queryTripsGroupedByServices(input: QueryTripsGroupedByServicesInput): Promise<QueryTripsGroupedByServicesOutput> {
         const route: Route | undefined = await RouteModel.findOne({route_id: input.route_id}).exec().then(toObject);
         if (route === null) {
             return undefined
@@ -104,8 +110,42 @@ export class MongoDBRepositories implements Repositories {
                 }
             },
             {
+                $lookup: {
+                    from: "calendar",
+                    localField: "_id",
+                    foreignField: "service_id",
+                    pipeline: [
+                        {
+                            $project: {
+                                _id: 0,
+                                service_id: 0,
+                            }
+                        }
+                    ],
+                    as: "calendars",
+                }
+            },
+            {
+                $lookup: {
+                    from: "calendar_dates",
+                    localField: "_id",
+                    foreignField: "service_id",
+                    pipeline: [
+                        {
+                            $project: {
+                                _id: 0,
+                                service_id: 0
+                            }
+                        }
+                    ],
+                    as: "calendar_dates",
+                }
+            },
+            {
                 $project: {
                     service_id: "$_id",
+                    calendar: { $arrayElemAt: ["$calendars", 0] },
+                    calendar_dates: "$calendar_dates",
                     trips: {
                         $sortArray: {
                             input: "$trips",
@@ -120,15 +160,15 @@ export class MongoDBRepositories implements Repositories {
                 $sort: { service_id: 1 }
             }
         ]).exec()
-        return {...route, services: services} as QueryTripsByServicesOfRouteOutput;
+        return {...route, services: services} as QueryTripsGroupedByServicesOutput;
     }
 
-    async clearAll(): Promise<void> {
+    async deleteAll(): Promise<void> {
         await Promise.all([
-            this.clearAllRoutes(),
-            this.clearAllStops(),
-            this.clearAllStopTimes(),
-            this.clearAllTrips()
+            this.deleteAllRoutes(),
+            this.deleteAllStops(),
+            this.deleteAllStopTimes(),
+            this.deleteAllTrips()
         ]);
     }
 

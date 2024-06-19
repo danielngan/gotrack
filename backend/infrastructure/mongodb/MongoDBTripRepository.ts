@@ -58,7 +58,7 @@ export class MongoDBTripRepository implements TripRepository {
         await deleteEntry(TripModel, {trip_id: tripId})
     }
 
-    async clearAllTrips(): Promise<void> {
+    async deleteAllTrips(): Promise<void> {
         await deleteManyEntries(TripModel, {})
     }
 }

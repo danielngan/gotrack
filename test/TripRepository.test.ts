@@ -6,7 +6,7 @@ import {DuplicateEntryError} from "../core/application/exceptions/DuplicateEntry
 describe.each(RepositoriesImplementations)('TripRepository Interface', (repo) => {
 
     beforeEach(async () => {
-        await repo.clearAllTrips()
+        await repo.deleteAllTrips()
     });
 
     it('should add and retrieve a trip', async () => {
@@ -199,7 +199,7 @@ describe.each(RepositoriesImplementations)('TripRepository Interface', (repo) =>
             shape_id: 'shape1'
         };
         await repo.addTrip(trip);
-        await repo.clearAllTrips();
+        await repo.deleteAllTrips();
         const allTrips = await repo.getAllTrips();
         expect(allTrips).toHaveLength(0);
     });

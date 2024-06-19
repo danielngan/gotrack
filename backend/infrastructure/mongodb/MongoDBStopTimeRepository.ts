@@ -55,7 +55,7 @@ export class MongoDBStopTimeRepository implements StopTimeRepository {
         await deleteEntry(StopTimeModel, {trip_id: tripId, stop_sequence: stopSequence})
     }
 
-    async clearAllStopTimes(): Promise<void> {
+    async deleteAllStopTimes(): Promise<void> {
         await deleteManyEntries(StopTimeModel, {})
     }
 }

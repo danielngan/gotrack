@@ -62,5 +62,5 @@ export interface TripRepository {
      * It is recommended to use this method only for testing purposes, and not in production.
      * @returns A promise that resolves when all trips have been deleted.
      */
-    clearAllTrips(): Promise<void>;
+    deleteAllTrips(): Promise<void>;
 }

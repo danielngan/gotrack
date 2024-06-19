@@ -22,7 +22,7 @@ describe.each(RepositoriesImplementations)('RouteRepository', (repo) => {
     };
 
     beforeEach(async () => {
-        await repo.clearAllRoutes();
+        await repo.deleteAllRoutes();
     });
 
     it('should return all routes', async () => {

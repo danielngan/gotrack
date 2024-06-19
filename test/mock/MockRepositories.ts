@@ -5,6 +5,13 @@ import {StopTime} from "../../core/domain/entities/StopTime";
 import {Stop} from "../../core/domain/entities/Stop";
 import {EntryNotFoundError} from "../../core/application/exceptions/EntryNotFoundError";
 import {DuplicateEntryError} from "../../core/application/exceptions/DuplicateEntryError";
+import {CalendarDate} from "../../core/domain/entities/CalendarDate";
+import {Shape} from "../../core/domain/entities/Shape";
+import {
+    QueryTripsGroupedByServicesInput,
+    QueryTripsGroupedByServicesOutput
+} from "../../core/application/usecases/QueryTripsGroupedByServices";
+import {Calendar} from "../../core/domain/entities/Calendar";
 
 export class MockRepositories implements Repositories {
 
@@ -50,7 +57,7 @@ export class MockRepositories implements Repositories {
         this.routes.splice(index, 1);
     }
 
-    async clearAllRoutes(): Promise<void> {
+    async deleteAllRoutes(): Promise<void> {
         this.routes.length = 0;
     }
 
@@ -97,7 +104,7 @@ export class MockRepositories implements Repositories {
         this.stops.splice(index, 1);
     }
 
-    async clearAllStops(): Promise<void> {
+    async deleteAllStops(): Promise<void> {
         this.stops.length = 0;
     }
 
@@ -139,7 +146,7 @@ export class MockRepositories implements Repositories {
         this.stopTimes.splice(index, 1);
     }
 
-    async clearAllStopTimes(): Promise<void> {
+    async deleteAllStopTimes(): Promise<void> {
         this.stopTimes.length = 0;
     }
 
@@ -186,19 +193,107 @@ export class MockRepositories implements Repositories {
         this.trips.splice(index, 1);
     }
 
-    async clearAllTrips(): Promise<void> {
+    async deleteAllTrips(): Promise<void> {
         this.trips.length = 0;
     }
 
-    async clearAll(): Promise<void> {
-        await this.clearAllRoutes();
-        await this.clearAllStops();
-        await this.clearAllStopTimes();
-        await this.clearAllTrips();
+    async deleteAll(): Promise<void> {
+        await this.deleteAllRoutes();
+        await this.deleteAllStops();
+        await this.deleteAllStopTimes();
+        await this.deleteAllTrips();
     }
 
-    getTripsWithStopTimesByRouteId(routeId: string): Promise<Array<Trip & { stop_times: Array<StopTime> }>> {
+    addCalendarDate(calendarDate: CalendarDate): Promise<void> {
+        return Promise.resolve(undefined);
+    }
+
+    addShape(shape: Shape): Promise<void> {
+        return Promise.resolve(undefined);
+    }
+
+    deleteAllCalendarDates(): Promise<void> {
+        return Promise.resolve(undefined);
+    }
+
+    deleteAllShapes(): Promise<void> {
+        return Promise.resolve(undefined);
+    }
+
+    deleteCalendarDate(serviceId: string, date: string): Promise<void> {
+        return Promise.resolve(undefined);
+    }
+
+    deleteCalendarDatesByServiceId(serviceId: string): Promise<void> {
+        return Promise.resolve(undefined);
+    }
+
+    deleteShape(shapeId: string, shapePtSequence: number): Promise<void> {
+        return Promise.resolve(undefined);
+    }
+
+    deleteShapesByShapeId(shapeId: string): Promise<void> {
+        return Promise.resolve(undefined);
+    }
+
+    getAllCalendarDates(): Promise<CalendarDate[]> {
         return Promise.resolve([]);
+    }
+
+    getAllShapes(): Promise<Shape[]> {
+        return Promise.resolve([]);
+    }
+
+    getCalendarDate(serviceId: string, date: string): Promise<CalendarDate | undefined> {
+        return Promise.resolve(undefined);
+    }
+
+    getCalendarDatesByServiceId(serviceId: string): Promise<CalendarDate[]> {
+        return Promise.resolve([]);
+    }
+
+    getShape(shapeId: string, shapePtSequence: number): Promise<Shape | undefined> {
+        return Promise.resolve(undefined);
+    }
+
+    getShapesByShapeId(shapeId: string): Promise<Shape[]> {
+        return Promise.resolve([]);
+    }
+
+    queryTripsGroupedByServices(input: QueryTripsGroupedByServicesInput): Promise<QueryTripsGroupedByServicesOutput> {
+        return Promise.resolve(undefined);
+    }
+
+    updateCalendarDate(calendarDate: Partial<CalendarDate> & Pick<CalendarDate, "service_id" | "date">): Promise<void> {
+        return Promise.resolve(undefined);
+    }
+
+    updateShape(shape: Partial<Shape> & Pick<Shape, "shape_id" | "shape_pt_sequence">): Promise<void> {
+        return Promise.resolve(undefined);
+    }
+
+    addCalendar(calendar: Calendar): Promise<void> {
+        return Promise.resolve(undefined);
+    }
+
+    deleteAllCalendars(): Promise<void> {
+        return Promise.resolve(undefined);
+    }
+
+    deleteCalendar(serviceId: string): Promise<void> {
+        return Promise.resolve(undefined);
+    }
+
+    getAllCalendars(): Promise<Calendar[]> {
+        return Promise.resolve([]);
+    }
+
+    getCalendar(serviceId: string): Promise<Calendar | undefined> {
+        return Promise.resolve(undefined);
+    }
+
+    updateCalendar(calendar: Partial<Calendar> & Pick<Calendar, "service_id">): Promise<void> {
+        return Promise.resolve(undefined);
     }
 
 }

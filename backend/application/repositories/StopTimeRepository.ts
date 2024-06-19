@@ -57,5 +57,5 @@ export interface StopTimeRepository {
      * It is useful for testing purposes, and should not be used in production.
      * @returns A promise that resolves when all stop times have been deleted.
      */
-    clearAllStopTimes(): Promise<void>;
+    deleteAllStopTimes(): Promise<void>;
 }
