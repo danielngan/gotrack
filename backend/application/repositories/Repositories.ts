@@ -12,6 +12,7 @@ import {
 } from "../../../core/application/usecases/QueryTripsGroupedByServices";
 import {CalendarDateRepository} from "./CalendarDateRepository";
 import {ShapeRepository} from "./ShapeRepository";
+import {CalendarRepository} from "./CalendarRepository";
 
 
 /**
@@ -22,6 +23,7 @@ import {ShapeRepository} from "./ShapeRepository";
  */
 export interface Repositories
     extends
+        CalendarRepository,
         CalendarDateRepository,
         RouteRepository,
         ShapeRepository,

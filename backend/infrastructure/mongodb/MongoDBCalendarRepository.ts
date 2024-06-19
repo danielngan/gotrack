@@ -12,7 +12,7 @@ import {
 import {Calendar} from "../../../core/domain/entities/Calendar";
 import {ServiceAvailable} from "../../../core/domain/types/ServiceAvailable";
 
-const [ CalendarSchema, CalendarModel ] = defineSchema<Calendar>("Calendar", {
+export const [ CalendarSchema, CalendarModel ] = defineSchema<Calendar>("Calendar", {
         service_id: { type: String, required: true, index: true, unique: true},
         monday: { type: Number, enum: ServiceAvailable, required: true },
         tuesday: { type: Number, enum: ServiceAvailable, required: true },

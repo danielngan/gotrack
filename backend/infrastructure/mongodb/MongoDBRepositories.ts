@@ -4,16 +4,22 @@ import {MongoDBStopTimeRepository, StopTimeModel} from "./MongoDBStopTimeReposit
 import {MongoDBTripRepository, TripModel} from "./MongoDBTripRepository";
 import {Repositories} from "../../application/repositories/Repositories";
 import {applyMixins} from "../../../core/utils/Utils";
-import {Trip} from "../../../core/domain/entities/Trip";
-import {StopTime} from "../../../core/domain/entities/StopTime";
-import {Stop} from "../../../core/domain/entities/Stop";
-import {QueryTripsGroupedByServicesInput, QueryTripsGroupedByServicesOutput} from "../../../core/application/usecases/QueryTripsGroupedByServices";
+import {
+    QueryTripsGroupedByServicesInput,
+    QueryTripsGroupedByServicesOutput
+} from "../../../core/application/usecases/QueryTripsGroupedByServices";
 import {toObject} from "./MongoDBUtils";
 import {Route} from "../../../core/domain/entities/Route";
+import {MongoDBCalendarRepository} from "./MongoDBCalendarRepository";
+import {MongoDBCalendarDateRepository} from "./MongoDBCalendarDateRepository";
+import {MongoDBShapeRepository} from "./MongoDBShapeRepository";
 
 export interface MongoDBRepositories
     extends
+        MongoDBCalendarRepository,
+        MongoDBCalendarDateRepository,
         MongoDBRouteRepository,
+        MongoDBShapeRepository,
         MongoDBStopRepository,
         MongoDBStopTimeRepository,
         MongoDBTripRepository,

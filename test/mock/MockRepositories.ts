@@ -11,6 +11,7 @@ import {
     QueryTripsGroupedByServicesInput,
     QueryTripsGroupedByServicesOutput
 } from "../../core/application/usecases/QueryTripsGroupedByServices";
+import {Calendar} from "../../core/domain/entities/Calendar";
 
 export class MockRepositories implements Repositories {
 
@@ -268,6 +269,30 @@ export class MockRepositories implements Repositories {
     }
 
     updateShape(shape: Partial<Shape> & Pick<Shape, "shape_id" | "shape_pt_sequence">): Promise<void> {
+        return Promise.resolve(undefined);
+    }
+
+    addCalendar(calendar: Calendar): Promise<void> {
+        return Promise.resolve(undefined);
+    }
+
+    deleteAllCalendars(): Promise<void> {
+        return Promise.resolve(undefined);
+    }
+
+    deleteCalendar(serviceId: string): Promise<void> {
+        return Promise.resolve(undefined);
+    }
+
+    getAllCalendars(): Promise<Calendar[]> {
+        return Promise.resolve([]);
+    }
+
+    getCalendar(serviceId: string): Promise<Calendar | undefined> {
+        return Promise.resolve(undefined);
+    }
+
+    updateCalendar(calendar: Partial<Calendar> & Pick<Calendar, "service_id">): Promise<void> {
         return Promise.resolve(undefined);
     }
 
