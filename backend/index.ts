@@ -14,7 +14,7 @@ async function main(): Promise<void> {
     await mongoose.connect(mongoDBUrl, {
         user: "root",
         pass: "goodExample",
-        dbName: "go",
+        dbName: "ytc",
         autoIndex: true,
     })
     console.log(`Successfully connected to MongoDB at ${mongoDBUrl}`)
