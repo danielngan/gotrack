@@ -1,5 +1,8 @@
 import {LocationType} from "../types/LocationType";
 import {WheelchairBoarding} from "../types/WheelchairBoarding";
+import {StopModel} from "../../../backend/infrastructure/mongodb/MongoDBStopRepository";
+import {StopTime} from "./StopTime";
+import { Trip } from "./Trip";
 
 /**
  * A model that represents a stop on a route as defined in the GTFS.
@@ -23,3 +26,6 @@ export interface Stop {
     readonly wheelchair_boarding?: WheelchairBoarding;
 }
 
+export type StopWithStopTimes = Stop & { stop_times: Record<string, StopTime> }
+
+export type TripWithStopTimes = Trip & { stop_times: Record<number, StopTime> }

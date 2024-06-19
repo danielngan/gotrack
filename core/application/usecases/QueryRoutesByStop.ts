@@ -1,15 +1,18 @@
 import {UseCase, UseCaseType} from "./UseCase";
-import {Stop} from "../../domain/entities/Stop";
 import {Route} from "../../domain/entities/Route";
-import {Trip} from "../../domain/entities/Trip";
+import {Stop} from "../../domain/entities/Stop";
 import {StopTime} from "../../domain/entities/StopTime";
+import {Trip} from "../../domain/entities/Trip";
 
-export class QueryStopsByLocation extends UseCase<{ location: [number, number]; radius?: number; },
-    Array<Stop & {
+/**
+ * Query routes by stop use case.
+ */
+export class QueryRoutesByStop extends UseCase<Pick<Stop, "stop_id">,
+    {
         routes: Array<Route & {
             trips: Array<Trip & StopTime>
-        }>
-    }>> {
+        }>,
+    } & Stop | undefined > {
 
     constructor() {
         super(UseCaseType.QUERY);

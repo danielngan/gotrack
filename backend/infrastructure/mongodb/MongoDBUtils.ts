@@ -32,6 +32,10 @@ export function toObject<T>(document: Document<unknown, {}, T> | null): T | unde
     return document?.toObject() ?? undefined
 }
 
+export function toObjectRequired<T>(document: Document<unknown, {}, T>): T {
+    return document.toObject()
+}
+
 export function toObjects<T>(documents: Document<unknown, {}, T>[]): T[] {
     return documents.map(document => document.toObject())
 }

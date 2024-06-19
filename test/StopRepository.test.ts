@@ -17,7 +17,7 @@ describe.each(RepositoriesImplementations)('StopRepository Interface', (repo) =>
             stop_lon: -75.0
         };
         await repo.addStop(stop);
-        const retrievedStop = await repo.getStopById('1');
+        const retrievedStop = await repo.getStop('1');
         expect(retrievedStop).toEqual(stop);
     });
 
@@ -41,7 +41,7 @@ describe.each(RepositoriesImplementations)('StopRepository Interface', (repo) =>
         };
         await repo.addStop(stop);
         await repo.updateStop({ stop_id: '1', stop_name: 'Updated Stop' });
-        const updatedStop = await repo.getStopById('1');
+        const updatedStop = await repo.getStop('1');
         expect(updatedStop?.stop_name).toBe('Updated Stop');
     });
 
@@ -58,7 +58,7 @@ describe.each(RepositoriesImplementations)('StopRepository Interface', (repo) =>
         };
         await repo.addStop(stop);
         await repo.deleteStop('1');
-        const deletedStop = await repo.getStopById('1');
+        const deletedStop = await repo.getStop('1');
         expect(deletedStop).toBeUndefined();
     });
 

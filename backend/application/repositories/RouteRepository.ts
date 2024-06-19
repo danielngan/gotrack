@@ -17,7 +17,7 @@ export interface RouteRepository {
      * @param routeId the ID of the route to return
      * @returns a promise that resolves to the route with the given ID or undefined
      */
-    getRouteById(routeId: string): Promise<Route | undefined>;
+    getRoute(routeId: string): Promise<Route | undefined>;
 
     /**
      * Returns the route with the given short name. If no route with the given short name exists,
@@ -62,7 +62,8 @@ export interface RouteRepository {
     deleteRoute(routeId: string): Promise<void>;
 
     /**
-     * Deletes all routes.
+     * Deletes all routes. This method deletes all routes from the repository.
+     * This method is useful for testing purposes, and should not be used in production.
      * @returns a promise that resolves when all routes have been deleted
      */
     clearAllRoutes(): Promise<void>;

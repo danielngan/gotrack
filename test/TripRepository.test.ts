@@ -20,7 +20,7 @@ describe.each(RepositoriesImplementations)('TripRepository Interface', (repo) =>
             shape_id: 'shape1'
         };
         await repo.addTrip(trip);
-        const retrievedTrip = await repo.getTripById('1');
+        const retrievedTrip = await repo.getTrip('1');
         expect(retrievedTrip).toEqual(trip);
     });
 
@@ -50,7 +50,7 @@ describe.each(RepositoriesImplementations)('TripRepository Interface', (repo) =>
         };
         await repo.addTrip(trip);
         await repo.updateTrip({ trip_id: '1', trip_headsign: 'Uptown' });
-        const updatedTrip = await repo.getTripById('1');
+        const updatedTrip = await repo.getTrip('1');
         expect(updatedTrip?.trip_headsign).toBe('Uptown');
     });
 
@@ -70,7 +70,7 @@ describe.each(RepositoriesImplementations)('TripRepository Interface', (repo) =>
         };
         await repo.addTrip(trip);
         await repo.deleteTrip('1');
-        const deletedTrip = await repo.getTripById('1');
+        const deletedTrip = await repo.getTrip('1');
         expect(deletedTrip).toBeUndefined();
     });
 
@@ -163,6 +163,15 @@ describe.each(RepositoriesImplementations)('TripRepository Interface', (repo) =>
         const trip3: Trip = {
             trip_id: '3',
             route_id: 'route1',
+            service_id: 'service1',
+            trip_headsign: 'Downtown',
+            direction_id: 0,
+            block_id: 'block1',
+            shape_id: 'shape1'
+        }
+        const trip4: Trip = {
+            trip_id: '4',
+            route_id: 'route2',
             service_id: 'service2',
             trip_headsign: 'Downtown',
             direction_id: 0,
@@ -172,10 +181,11 @@ describe.each(RepositoriesImplementations)('TripRepository Interface', (repo) =>
         await repo.addTrip(trip1);
         await repo.addTrip(trip2);
         await repo.addTrip(trip3);
-        const trips = await repo.getTripsByServiceId('service1');
+        await repo.addTrip(trip4);
+        const trips = await repo.getTripsByRouteAndServiceId('route1', 'service1');
         expect(trips).toHaveLength(2);
         expect(trips).toContainEqual(trip1);
-        expect(trips).toContainEqual(trip2);
+        expect(trips).toContainEqual(trip3);
     });
 
     it('should clear all trips', async () => {
